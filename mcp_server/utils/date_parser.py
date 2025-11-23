@@ -71,8 +71,8 @@ class DateParser:
         """
         if not date_query or not isinstance(date_query, str):
             raise InvalidParameterError(
-                "日期查询字符串不能为空",
-                suggestion="请提供有效的日期查询，如：今天、昨天、2025-10-10"
+                "Date query string cannot be empty",
+                suggestion="Please provide a valid date query, such as: today, yesterday, 2025-10-10"
             )
 
         date_query = date_query.strip().lower()
@@ -93,8 +93,8 @@ class DateParser:
             days = int(cn_days_ago_match.group(1))
             if days > 365:
                 raise InvalidParameterError(
-                    f"天数过大: {days}天",
-                    suggestion="请使用小于365天的相对日期或使用绝对日期"
+                    f"Number of days too large: {days} days",
+                    suggestion="Please use a relative date with less than 365 days or use an absolute date"
                 )
             return datetime.now() - timedelta(days=days)
 
@@ -103,8 +103,8 @@ class DateParser:
             days = int(en_days_ago_match.group(1))
             if days > 365:
                 raise InvalidParameterError(
-                    f"天数过大: {days}天",
-                    suggestion="请使用小于365天的相对日期或使用绝对日期"
+                    f"Number of days too large: {days} days",
+                    suggestion="Please use a relative date with less than 365 days or use an absolute date"
                 )
             return datetime.now() - timedelta(days=days)
 
@@ -134,8 +134,8 @@ class DateParser:
                 return datetime(year, month, day)
             except ValueError as e:
                 raise InvalidParameterError(
-                    f"无效的日期: {date_query}",
-                    suggestion=f"日期值错误: {str(e)}"
+                    f"Invalid date: {date_query}",
+                    suggestion=f"Date value error: {str(e)}"
                 )
 
         # 7. 尝试解析中文日期：MM月DD日 或 YYYY年MM月DD日
@@ -159,8 +159,8 @@ class DateParser:
                 return datetime(year, month, day)
             except ValueError as e:
                 raise InvalidParameterError(
-                    f"无效的日期: {date_query}",
-                    suggestion=f"日期值错误: {str(e)}"
+                    f"Invalid date: {date_query}",
+                    suggestion=f"Date value error: {str(e)}"
                 )
 
         # 8. 尝试解析斜杠格式：YYYY/MM/DD 或 MM/DD
@@ -182,18 +182,18 @@ class DateParser:
                 return datetime(year, month, day)
             except ValueError as e:
                 raise InvalidParameterError(
-                    f"无效的日期: {date_query}",
-                    suggestion=f"日期值错误: {str(e)}"
+                    f"Invalid date: {date_query}",
+                    suggestion=f"Date value error: {str(e)}"
                 )
 
         # 如果所有格式都不匹配
         raise InvalidParameterError(
-            f"无法识别的日期格式: {date_query}",
+            f"Unrecognizable date format: {date_query}",
             suggestion=(
-                "支持的格式:\n"
-                "- 相对日期: 今天、昨天、前天、3天前、today、yesterday、3 days ago\n"
-                "- 星期: 上周一、本周三、last monday、this friday\n"
-                "- 绝对日期: 2025-10-10、10月10日、2025年10月10日"
+                "Supported formats:\n"
+                "- Relative dates: today, yesterday, 3 days ago, 2025-10-10\n"
+                "- Weekdays: last monday, this friday\n"
+                "- Absolute dates: 2025-10-10, 10-10, 2025-10-10"
             )
         )
 
@@ -237,9 +237,9 @@ class DateParser:
 
         Examples:
             >>> DateParser.format_date_folder(datetime(2025, 10, 11))
-            '2025年10月11日'
+            '2025-10-11'
         """
-        return date.strftime("%Y年%m月%d日")
+        return date.strftime("%Y-%m-%d")
 
     @staticmethod
     def validate_date_not_future(date: datetime) -> None:
@@ -254,8 +254,8 @@ class DateParser:
         """
         if date.date() > datetime.now().date():
             raise InvalidParameterError(
-                f"不能查询未来的日期: {date.strftime('%Y-%m-%d')}",
-                suggestion="请使用今天或过去的日期"
+                f"Cannot query future dates: {date.strftime('%Y-%m-%d')}",
+                suggestion="Please use today or past dates"
             )
 
     @staticmethod
@@ -273,6 +273,6 @@ class DateParser:
         days_ago = (datetime.now().date() - date.date()).days
         if days_ago > max_days:
             raise InvalidParameterError(
-                f"日期太久远: {date.strftime('%Y-%m-%d')} ({days_ago}天前)",
-                suggestion=f"请查询{max_days}天内的数据"
+                f"Date too far in the past: {date.strftime('%Y-%m-%d')} ({days_ago} days ago)",
+                suggestion=f"Please query data within {max_days} days"
             )

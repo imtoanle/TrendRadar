@@ -1,197 +1,197 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-issue-forms.json
 
-name: ⚙️ 设置遇到困难
-description: 配置相关的问题或需要帮助
-title: "[设置] "
-labels: ["配置", "帮助"]
+name: ⚙️ Configuration Help
+description: Configuration-related problems or need help
+title: "[Config] "
+labels: ["configuration", "help"]
 assignees:
   - sansan0
 body:
   - type: markdown
     attributes:
       value: |
-        遇到设置问题时，**请尽可能详细描述你的问题**，并上传配置文件和错误信息的截图，这样能帮助更快定位和解决问题。
+        When encountering configuration problems, **please describe your problem in as much detail as possible** and upload screenshots of configuration files and error messages. This will help locate and solve problems faster.
 
-        建议先查看项目说明文档，大部分常见问题都有详细说明。
+        It is recommended to first check the project documentation, as most common problems are explained in detail.
 
         ---
 
-        ### 📋 配置问题自查清单（提问前建议阅读）
+        ### 📋 Configuration problem self-check checklist (recommended reading before asking)
 
-        #### 1️⃣ **优先查看文档** 📚
-        绝大部分配置问题在文档中都有详细说明，建议先查看相关章节：
-        - [🚀 快速开始](https://github.com/sansan0/TrendRadar#-快速开始)
-        - [📝 frequency_words.txt 配置](https://github.com/sansan0/TrendRadar#frequencywordstxt-配置教程)
-        - [🐳 Docker 部署指南](https://github.com/sansan0/TrendRadar#-docker-部署)
-        - [🤖 AI 分析配置](https://github.com/sansan0/TrendRadar#-ai-智能分析部署)
+        #### 1️⃣ **Check documentation first** 📚
+        Most configuration problems are explained in detail in the documentation. It is recommended to check the relevant sections first:
+        - [🚀 Quick start](https://github.com/sansan0/TrendRadar#-快速开始)
+        - [📝 frequency_words.txt configuration](https://github.com/sansan0/TrendRadar#frequencywordstxt-配置教程)
+        - [🐳 Docker deployment guide](https://github.com/sansan0/TrendRadar#-docker-部署)
+        - [🤖 AI analysis configuration](https://github.com/sansan0/TrendRadar#-ai-智能分析部署)
 
-        #### 2️⃣ **测试推送的常见误区** ⚠️
-        测试消息推送时，请检查以下配置：
+        #### 2️⃣ **Common misconceptions in testing push** ⚠️
+        When testing message push, please check the following configurations:
 
-        **必须检查的配置项：**
-        - ❌ **错误**：`report.mode` 设置为 `incremental`（增量模式仅在有新内容时推送）
-        - ✅ **正确**：`report.mode` 设置为 `daily` 或 `current`
-        - ❌ **错误**：`notification.push_window.enabled` 设置为 `true`（推送时间窗口会限制推送时间）
-        - ✅ **正确**：`notification.push_window.enabled` 设置为 `false`（测试时建议关闭）
+        **Required configuration items:**
+        - ❌ **Wrong**: `report.mode` set to `incremental` (incremental mode only pushes when there is new content)
+        - ✅ **Correct**: `report.mode` set to `daily` or `current`
+        - ❌ **Wrong**: `notification.push_window.enabled` set to `true` (push time window will limit push time)
+        - ✅ **Correct**: `notification.push_window.enabled` set to `false` (recommended to disable during testing)
 
-        **说明：**
-        - 推送时间窗口控制是可选功能，开启后只在指定时间范围内推送
-        - 如果当前时间不在设定的窗口范围内，将不会收到推送消息
-        - 测试时建议先关闭此功能
+        **Explanation:**
+        - Push time window control is an optional feature. When enabled, it only pushes within the specified time range
+        - If the current time is not within the set window range, push messages will not be received
+        - It is recommended to disable this feature first during testing
 
-        #### 3️⃣ **YAML 格式很严格** 📏
-        配置文件最常见的 3 个错误：
+        #### 3️⃣ **YAML format is very strict** 📏
+        The 3 most common errors in configuration files:
         ```yaml
-        # ❌ 错误示例 1：缩进不对（必须用空格，不能用Tab）
+        # ❌ Wrong example 1: incorrect indentation (must use spaces, not tabs)
         notification:
-        enable_notification: true  # ← 错误：缺少缩进
+        enable_notification: true  # ← Error: missing indentation
 
-        # ❌ 错误示例 2：冒号后面没有空格
-        enable_notification:true  # ← 错误：冒号后需要空格
+        # ❌ Wrong example 2: no space after colon
+        enable_notification:true  # ← Error: need space after colon
 
-        # ✅ 正确示例：
+        # ✅ Correct example:
         notification:
-          enable_notification: true  # ← 正确：2空格缩进 + 冒号后有空格
+          enable_notification: true  # ← Correct: 2-space indentation + space after colon
         ```
 
-        #### 4️⃣ **根据部署方式准备信息** 📦
+        #### 4️⃣ **Prepare information based on deployment method** 📦
 
-        **如果你是 GitHub Actions 部署：**
-        1. **必须提供** Actions 工作流链接（格式：`https://github.com/你的用户名/TrendRadar/actions/workflows/crawler.yml`）
-        2. **如何查看并截图执行日志：**
+        **If you are using GitHub Actions deployment:**
+        1. **Must provide** Actions workflow link (format: `https://github.com/your-username/TrendRadar/actions/workflows/crawler.yml`)
+        2. **How to view and screenshot execution logs:**
            ```
-           步骤 1：打开你的仓库，点击顶部 "Actions" 标签
-           步骤 2：点击左侧 "Crawler" 工作流
-           步骤 3：点击最近一次运行记录（最上面的那个）
-           步骤 4：点击展开 "Run crawler" 步骤
-           步骤 5：截图完整的日志内容（特别是红色错误部分）
+           Step 1: Open your repository, click the "Actions" tab at the top
+           Step 2: Click the "Crawler" workflow on the left
+           Step 3: Click the most recent run record (the top one)
+           Step 4: Click to expand the "Run crawler" step
+           Step 5: Screenshot the complete log content (especially the red error parts)
            ```
-        3. 提供 `config.yaml` 配置内容（记得隐藏 webhook 地址）
+        3. Provide `config.yaml` configuration content (remember to hide webhook URLs)
 
-        **如果你是 Docker 部署：**
-        1. 提供项目目录结构截图（运行 `ls -la` 或打开文件管理器）
-        2. 提供 Docker 日志（运行 `docker logs 容器名`）
-        3. 提供容器状态（运行 `docker ps -a`）
-        4. 提供 `.env` 文件内容（隐藏敏感信息）
+        **If you are using Docker deployment:**
+        1. Provide project directory structure screenshot (run `ls -la` or open file manager)
+        2. Provide Docker logs (run `docker logs container_name`)
+        3. Provide container status (run `docker ps -a`)
+        4. Provide `.env` file content (hide sensitive information)
 
-        **如果你是本地运行：**
-        1. 提供完整的错误信息截图
-        2. 提供 `config.yaml` 配置内容
-        3. 提供 Python 版本（运行 `python --version`）
+        **If you are running locally:**
+        1. Provide complete error message screenshots
+        2. Provide `config.yaml` configuration content
+        3. Provide Python version (run `python --version`)
 
-        #### 5️⃣ **遇到困难时的建议** 🤔
-        - 如果尝试 30 分钟以上仍无进展，建议考虑换个思路
-        - 可以尝试：
-          1. 重新从头阅读相关文档章节
-          2. 尝试其他部署方式（如从 Docker 切换到 GitHub Actions）
-          3. 对比文档示例，检查差异之处
+        #### 5️⃣ **Suggestions when encountering difficulties** 🤔
+        - If you still have no progress after trying for more than 30 minutes, it is recommended to consider changing your approach
+        - You can try:
+          1. Re-read the relevant documentation sections from the beginning
+          2. Try other deployment methods (such as switching from Docker to GitHub Actions)
+          3. Compare with documentation examples and check for differences
 
-        #### 6️⃣ **提问时请尽量提供以下信息** 📋
-        为了更快地帮你定位问题，建议提供：
-        - ✅ 配置文件内容（请隐藏 webhook 等敏感信息）
-        - ✅ 完整的错误日志截图
-        - ✅ 部署方式（本地运行/Docker/GitHub Actions）
-        - ✅ 已经尝试过的解决方法
-        - ✅ 具体的问题现象（请避免只说"不生效"或"没反应"，尽量描述具体表现）
+        #### 6️⃣ **Please provide the following information when asking questions** 📋
+        To help you locate problems faster, it is recommended to provide:
+        - ✅ Configuration file content (please hide sensitive information such as webhooks)
+        - ✅ Complete error log screenshots
+        - ✅ Deployment method (local run/Docker/GitHub Actions)
+        - ✅ Solutions you have already tried
+        - ✅ Specific problem phenomena (please avoid just saying "not working" or "no response", try to describe specific manifestations)
 
   - type: dropdown
     id: config-type
     attributes:
-      label: 🏷️ 配置问题类别
+      label: 🏷️ Configuration problem category
       options:
-        - 基础配置问题（config.yaml 设置）
-        - 通知配置问题（webhook、消息推送等）
-        - 部署配置问题（Docker、GitHub Actions等）
-        - 关键词配置问题（frequency_words.txt 设置）
-        - 环境配置问题（Python、依赖包等）
-        - 其他配置问题
+        - Basic configuration issues (config.yaml settings)
+        - Notification configuration issues (webhook, message push, etc.)
+        - Deployment configuration issues (Docker, GitHub Actions, etc.)
+        - Keyword configuration issues (frequency_words.txt settings)
+        - Environment configuration issues (Python, dependencies, etc.)
+        - Other configuration issues
     validations:
       required: true
 
   - type: dropdown
     id: environment
     attributes:
-      label: 🖥️ 使用环境
+      label: 🖥️ Operating environment
       options:
-        - 本地运行（直接在电脑上运行）
-        - Docker 容器运行
-        - GitHub Actions 自动运行
-        - 其他方式
+        - Local run (running directly on computer)
+        - Docker container run
+        - GitHub Actions automatic run
+        - Other methods
     validations:
       required: true
 
   - type: textarea
     id: problem-description
     attributes:
-      label: 📝 详细描述问题
-      description: 请详细描述你遇到的设置问题
+      label: 📝 Detailed problem description
+      description: Please describe your configuration problem in detail
       placeholder: |
-        请详细描述：
-        - 遇到的具体问题是什么
-        - 你希望达到什么效果
-        - 已经尝试了哪些方法
-        - 参考了哪些文档或教程
+        Please describe in detail:
+        - What specific problem you encountered
+        - What effect you hope to achieve
+        - What methods you have already tried
+        - What documentation or tutorials you referred to
 
-        💡 问题截图能提供更多信息！
+        💡 Problem screenshots can provide more information!
     validations:
       required: true
 
   - type: textarea
     id: config-content
     attributes:
-      label: 📄 配置内容
-      description: 请提供相关的配置内容（记得隐藏敏感信息如 webhook 地址）
+      label: 📄 Configuration content
+      description: Please provide relevant configuration content (remember to hide sensitive information such as webhook URLs)
       placeholder: |
-        请贴出相关的配置内容（记得隐藏 webhook 地址等敏感信息）：
+        Please paste relevant configuration content (remember to hide sensitive information such as webhook URLs):
 
         ```yaml
         notification:
           enable_notification: true
           webhooks:
-            feishu_url: "***隐藏***"
-            dingtalk_url: "***隐藏***"
+            feishu_url: "***HIDDEN***"
+            dingtalk_url: "***HIDDEN***"
         ```
 
-        💡 配置文件截图也很有用！
+        💡 Configuration file screenshots are also very useful!
     validations:
       required: false
 
   - type: textarea
     id: error-messages
     attributes:
-      label: ❌ 错误信息（如果有的话）
-      description: 如果程序显示了错误信息，请贴出来
+      label: ❌ Error messages (if any)
+      description: If the program shows error messages, please paste them
       placeholder: |
-        如果有错误信息，请完整复制到这里：
+        If there are error messages, please copy them completely here:
 
         ```
-        错误信息内容...
+        Error message content...
         ```
 
-        💡 错误信息的截图也很重要！
+        💡 Screenshots of error messages are also very important!
 
   - type: textarea
     id: screenshots
     attributes:
-      label: 📷 相关截图（强烈推荐）
-      description: 上传配置界面、错误信息等截图
+      label: 📷 Related screenshots (highly recommended)
+      description: Upload screenshots of configuration interface, error messages, etc.
       placeholder: |
-        请上传相关截图，特别是：
-        - 配置文件内容截图
-        - 错误信息截图
-        - 操作界面截图
-        - 期望效果的参考图
+        Please upload relevant screenshots, especially:
+        - Configuration file content screenshots
+        - Error message screenshots
+        - Operation interface screenshots
+        - Reference images of expected results
 
-        💡 截图是最直观的问题展示方式！
+        💡 Screenshots are the most intuitive way to display problems!
 
   - type: textarea
     id: additional-info
     attributes:
-      label: 📎 其他补充信息
-      description: 其他可能有用的信息
+      label: 📎 Additional information
+      description: Other potentially useful information
       placeholder: |
-        - 操作系统版本（如 Windows 11、macOS）
-        - Python 版本信息
-        - 网络环境特殊情况
-        - 具体使用场景说明
-        - 其他你觉得相关的信息
+        - Operating system version (e.g., Windows 11, macOS)
+        - Python version information
+        - Special network environment conditions
+        - Specific usage scenario descriptions
+        - Other information you think is relevant

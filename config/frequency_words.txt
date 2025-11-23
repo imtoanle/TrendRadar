@@ -1,56 +1,93 @@
+# Chinese companies/brands
 胖东来
 于东来
 
+# AI companies
 DeepSeek
 梁文锋
+Liang Wenfeng
 
+# Huawei ecosystem
 华为
+Huawei
 鸿蒙
 HarmonyOS
 任正非
+Ren Zhengfei
 
+# BYD automotive
 比亚迪
+BYD
 王传福
+Wang Chuanfu
 
+# DJI/drones
 大疆
 DJI
 
+# Robotics companies
 宇树
+Unitree
 王兴兴
+Wang Xingxing
 
 智元
+Zhiyuan
 灵犀
+Lingxi
 稚晖君
+Zhi Huijun
 彭志辉
+Peng Zhihui
 
+# Gaming
 黑神话
+Black Myth
 冯骥
+Feng Ji
 
 影之刃零
+Blade of the Zero
 梁其伟
+Liang Qiwei
 
 哪吒
+Ne Zha
 饺子
+Jiaozi
 杨宇
-!车
-!餐
+Yang Yu
 
+# Chinese sci-fi
 三体
+Three-Body Problem
 流浪地球
+Wandering Earth
 刘慈欣
+Liu Cixin
 郭帆
+Guo Fan
 
 申奥
+Shen Ao
 
+# Chinese tech companies
 京东
+JD.com
 刘强东
+Richard Liu
 
 字节
+ByteDance
 bytedance
 张一鸣
+Zhang Yiming
 
+# International companies
 特斯拉
+Tesla
 马斯克
+Musk
 
 微软
 Microsoft
@@ -58,6 +95,7 @@ Microsoft
 英伟达
 NVIDIA
 黄仁勋
+Jensen Huang
 
 AMD
 
@@ -66,6 +104,7 @@ google
 gemini
 deepmind
 
+# AI technologies
 chatgpt
 openai
 sora
@@ -73,41 +112,67 @@ sora
 claude
 Anthropic
 
+# Apple products
 iphone
 ipad
 mac
 ios
 
+# AI terms
 ai
 !gai
 人工智能
+artificial intelligence
 
 自动驾驶
+autonomous driving
 
 机器人
+robotics
 
+# Geography
 国产
+domestic
 中国
+China
 
 美国
+USA
 日本
+Japan
 韩国
+Korea
 
+# Technology
 芯片
+semiconductor
 光刻机
+lithography machine
 
 科技
+technology
 
 核能
+nuclear energy
 
 水电站
+hydropower station
 雅鲁藏布江
+Yarlung Tsangpo River
 
 新质生产力
+new quality productive forces
 
+# Space exploration
 月球
+moon
 登月
+moon landing
 火星
+Mars
 宇宙
+universe
 飞船
+spacecraft
 航空
+aviation

@@ -211,7 +211,7 @@ class SearchTools:
                     "requested_limit": limit,
                     "search_mode": search_mode,
                     "query": query,
-                    "platforms": platforms or "所有平台",
+                    "platforms": platforms or "All Platforms",
                     "time_range": time_range_desc,
                     "sort_by": sort_by
                 },

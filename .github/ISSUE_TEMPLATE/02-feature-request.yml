@@ -1,8 +1,8 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-issue-forms.json
 
-name: 💡 我有个想法
-description: 建议新功能或改进现有功能
-title: "[建议] "
+name: 💡 Feature Request
+description: Suggest new features or improve existing features
+title: "[Feature] "
 labels: ["enhancement"]
 assignees:
   - sansan0
@@ -10,89 +10,89 @@ body:
   - type: markdown
     attributes:
       value: |
-        ### 💝 温馨提醒
+        ### 💝 Friendly Reminder
 
-        感谢你的创意想法！如果这个项目对你有帮助，欢迎给项目点个 ⭐ **Star**！
+        Thank you for your creative ideas! If this project helps you, please consider giving it a ⭐ **Star**!
 
-        好的建议让项目变得更加实用。**欢迎用截图或示例**来展示你的想法！
+        Good suggestions make the project more practical. **Screenshots or examples are welcome** to showcase your ideas!
 
   - type: dropdown
     id: feature-category
     attributes:
-      label: 🏷️ 建议类别
+      label: 🏷️ Suggestion category
       options:
-        - 数据源相关（新增平台、改进抓取等）
-        - 分析功能相关（算法改进、筛选优化等）
-        - 通知方式相关（新增通知渠道、消息格式等）
-        - 配置管理相关（设置优化、界面改进等）
-        - 部署运维相关（安装简化、监控告警等）
-        - 数据展示相关（报告格式、图表可视化等）
-        - 性能优化相关
-        - 用户体验改进
-        - 其他想法
+        - Data source related (add platforms, improve crawling, etc.)
+        - Analysis function related (algorithm improvements, filtering optimization, etc.)
+        - Notification methods related (add notification channels, message formats, etc.)
+        - Configuration management related (settings optimization, interface improvements, etc.)
+        - Deployment and operation related (installation simplification, monitoring alerts, etc.)
+        - Data display related (report formats, chart visualization, etc.)
+        - Performance optimization related
+        - User experience improvements
+        - Other ideas
     validations:
       required: true
 
   - type: textarea
     id: feature-description
     attributes:
-      label: 💭 详细描述你的想法
-      description: 请详细描述你希望添加的功能
+      label: 💭 Describe your idea in detail
+      description: Please describe in detail the feature you want to add
       placeholder: |
-        请详细描述：
-        - 你希望增加什么功能
-        - 这个功能应该怎么使用
-        - 使用后能达到什么效果
+        Please describe in detail:
+        - What feature you want to add
+        - How this feature should be used
+        - What effect can be achieved after use
 
-        💡 提示：如果有类似功能的截图作为参考就更好了！
+        💡 Tip: Screenshots of similar features as reference would be even better!
     validations:
       required: true
 
   - type: textarea
     id: use-case
     attributes:
-      label: 🎯 什么时候会用到这个功能
-      description: 这个功能在什么场景下使用？
+      label: 🎯 When would this feature be used
+      description: In what scenarios would this feature be used?
       placeholder: |
-        例如：
-        - 当我需要...的时候
-        - 在...情况下会很方便
-        - 可以解决...问题
-        - 能够帮助...用户
+        For example:
+        - When I need to...
+        - It would be very convenient in... situations
+        - It can solve... problems
+        - It can help... users
     validations:
       required: true
 
   - type: textarea
     id: implementation-ideas
     attributes:
-      label: 🛠️ 实现想法（可选）
-      description: 如果你有实现思路，欢迎分享
+      label: 🛠️ Implementation ideas (optional)
+      description: If you have implementation ideas, please share
       placeholder: |
-        - 功能界面应该怎么设计
-        - 配置应该怎么设置
-        - 参考哪些类似的工具或网站
-        - 其他实现建议
+        - How should the feature interface be designed
+        - How should the configuration be set
+        - What similar tools or websites to reference
+        - Other implementation suggestions
 
   - type: textarea
     id: mockups-examples
     attributes:
-      label: 📷 功能示意图（推荐）
-      description: 上传功能示意图、参考截图或手绘草图
+      label: 📷 Feature mockups (recommended)
+      description: Upload feature mockups, reference screenshots or hand-drawn sketches
       placeholder: |
-        请上传：
-        - 功能界面的设计图（手绘也可以）
-        - 类似功能的参考截图
-        - 使用流程的示意图
+        Please upload:
+        - Feature interface design (hand-drawn is fine too)
+        - Reference screenshots of similar features
+        - Workflow diagrams
 
-        💡 可视化的说明最容易理解！
+        💡 Visual explanations are easiest to understand!
 
   - type: textarea
     id: additional-context
     attributes:
-      label: 📎 其他补充说明
-      description: 其他想要补充的内容
+      label: 📎 Additional notes
+      description: Other content you want to supplement
       placeholder: |
-        - 相关的参考资料链接
-        - 类似功能的其他工具
-        - 更多使用场景说明
-        - 其他相关想法
+        - Related reference material links
+        - Other tools with similar features
+        - More usage scenario descriptions
+        - Other related ideas

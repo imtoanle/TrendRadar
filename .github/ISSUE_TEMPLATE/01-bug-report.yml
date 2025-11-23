@@ -1,8 +1,8 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-issue-forms.json
 
-name: 🐛 遇到问题了
-description: 程序运行不正常或出现错误
-title: "[问题] "
+name: 🐛 Bug Report
+description: Program is not running properly or encountering errors
+title: "[Bug] "
 labels: ["bug"]
 assignees:
   - sansan0
@@ -10,159 +10,159 @@ body:
   - type: markdown
     attributes:
       value: |
-        **详细清楚的问题描述能帮助项目作者更快理解和解决你遇到的困扰**。强烈建议上传截图，图文并茂会让问题更容易被理解和定位。
+        **Detailed and clear problem descriptions help project authors understand and resolve your issues more quickly.** It is highly recommended to upload screenshots, as images and text make problems easier to understand and locate.
 
         ---
 
-        ### 📋 提交问题前，请先检查以下事项
+        ### 📋 Before submitting an issue, please check the following
 
-        #### 1️⃣ **建议先查看文档** 📖
-        大部分常见问题在文档中都有详细说明，建议先查看相关章节：
-        - [📝 配置教程](https://github.com/sansan0/TrendRadar#-快速开始)
-        - [❓ 常见问题](https://github.com/sansan0/TrendRadar#问题答疑与1元点赞)
-        - [🐳 Docker部署](https://github.com/sansan0/TrendRadar#-docker-部署)
+        #### 1️⃣ **Check documentation first** 📖
+        Most common problems are explained in detail in the documentation. It is recommended to check the relevant sections first:
+        - [📝 Configuration tutorial](https://github.com/sansan0/TrendRadar#-快速开始)
+        - [❓ FAQ](https://github.com/sansan0/TrendRadar#问题答疑与1元点赞)
+        - [🐳 Docker deployment](https://github.com/sansan0/TrendRadar#-docker-部署)
 
-        #### 2️⃣ **测试推送功能的注意事项** ⚠️
-        测试消息推送时，请确保以下配置正确：
+        #### 2️⃣ **Notes for testing push functionality** ⚠️
+        When testing message push, please ensure the following configurations are correct:
 
-        **必须检查的配置项：**
-        - ✅ `report.mode` 设置为 `daily` 或 `current`（请勿使用 `incremental`，该模式仅在有新内容时才推送）
-        - ✅ `notification.push_window.enabled` 设置为 `false`（关闭推送时间窗口控制）
-        - ✅ `notification.enable_notification` 设置为 `true`（确保通知功能已启用）
+        **Required configuration items:**
+        - ✅ `report.mode` is set to `daily` or `current` (do not use `incremental`, this mode only pushes when there is new content)
+        - ✅ `notification.push_window.enabled` is set to `false` (disable push time window control)
+        - ✅ `notification.enable_notification` is set to `true` (ensure notification function is enabled)
 
-        **说明：**
-        - 推送时间窗口控制（`push_window`）是可选功能，如果开启会限制推送时间范围
-        - 测试时建议关闭此功能，避免因不在推送时间窗口而收不到消息
+        **Explanation:**
+        - Push time window control (`push_window`) is an optional feature. If enabled, it will limit the push time range
+        - It is recommended to disable this feature during testing to avoid missing messages due to being outside the push time window
 
-        #### 3️⃣ **检查配置细节** 🔍
-        部分问题可能是配置细节导致，建议检查：
-        - 配置文件的缩进格式是否正确（YAML 格式要求严格，必须使用空格而非 Tab）
-        - Webhook 地址是否完整复制（注意不要有多余或缺失的字符）
-        - 环境变量是否正确设置
-        - 文件路径是否正确
+        #### 3️⃣ **Check configuration details** 🔍
+        Some issues may be caused by configuration details. It is recommended to check:
+        - Whether the indentation format of the configuration file is correct (YAML format is strict and must use spaces, not tabs)
+        - Whether the webhook URL is completely copied (be careful not to have extra or missing characters)
+        - Whether environment variables are set correctly
+        - Whether file paths are correct
 
-        #### 4️⃣ **遇到困难时的建议** 💡
-        - 如果尝试 30 分钟以上仍无进展，可以考虑换个思路
-        - 建议重新从头阅读相关文档章节
-        - 或尝试其他部署方式（如从 Docker 切换到 GitHub Actions）
+        #### 4️⃣ **Suggestions when encountering difficulties** 💡
+        - If you still have no progress after trying for more than 30 minutes, you can consider changing your approach
+        - It is recommended to re-read the relevant documentation sections from the beginning
+        - Or try other deployment methods (such as switching from Docker to GitHub Actions)
 
-        #### 5️⃣ **根据部署方式提供完整信息** 📦
+        #### 5️⃣ **Provide complete information based on deployment method** 📦
 
-        **如果是 GitHub Actions 部署：**
-        1. **必须提供** Actions 工作流链接（如：`https://github.com/你的用户名/TrendRadar/actions/workflows/crawler.yml`）
-        2. **查看执行日志的步骤：**
-           - 打开你的仓库页面
-           - 点击顶部的 **Actions** 标签
-           - 点击左侧的 **Crawler** 工作流
-           - 点击最近一次运行记录
-           - 点击 **Run crawler** 查看详细日志
-           - **截图完整的日志内容**（特别是错误部分）
-        3. 提供 `config.yaml` 配置内容（隐藏敏感信息）
+        **If using GitHub Actions deployment:**
+        1. **Must provide** Actions workflow link (e.g.: `https://github.com/your-username/TrendRadar/actions/workflows/crawler.yml`)
+        2. **Steps to view execution logs:**
+           - Open your repository page
+           - Click the **Actions** tab at the top
+           - Click the **Crawler** workflow on the left
+           - Click the most recent run record
+           - Click **Run crawler** to view detailed logs
+           - **Screenshot the complete log content** (especially the error parts)
+        3. Provide `config.yaml` configuration content (hide sensitive information)
 
-        **如果是 Docker 部署：**
-        1. 提供项目目录结构截图（运行 `ls -la` 或打开文件管理器）
-        2. 提供 Docker 容器日志（运行 `docker logs 容器名`）
-        3. 提供容器状态（运行 `docker ps -a`）
-        4. 提供 `.env` 文件内容（隐藏敏感信息）
+        **If using Docker deployment:**
+        1. Provide project directory structure screenshot (run `ls -la` or open file manager)
+        2. Provide Docker container logs (run `docker logs container_name`)
+        3. Provide container status (run `docker ps -a`)
+        4. Provide `.env` file content (hide sensitive information)
 
-        **如果是本地运行：**
-        1. 提供完整的错误日志截图
-        2. 提供 `config.yaml` 配置内容
-        3. 提供 Python 版本（运行 `python --version`）
+        **If running locally:**
+        1. Provide complete error log screenshots
+        2. Provide `config.yaml` configuration content
+        3. Provide Python version (run `python --version`)
 
   - type: dropdown
     id: bug-category
     attributes:
-      label: 🏷️ 遇到了什么问题
+      label: 🏷️ What problem did you encounter
       options:
-        - 数据获取问题（获取不到新闻、请求失败等）
-        - 关键词筛选问题（关键词不生效、匹配异常等）
-        - 通知推送问题（收不到消息、推送失败等）
-        - 配置设置问题（配置文件错误、参数不生效等）
-        - 部署运行问题（Docker、GitHub Actions等）
-        - 性能问题（运行慢、卡顿等）
-        - 其他问题
+        - Data retrieval issues (unable to fetch news, request failures, etc.)
+        - Keyword filtering issues (keywords not working, matching abnormalities, etc.)
+        - Notification push issues (not receiving messages, push failures, etc.)
+        - Configuration issues (configuration file errors, parameters not taking effect, etc.)
+        - Deployment and operation issues (Docker, GitHub Actions, etc.)
+        - Performance issues (slow running, lagging, etc.)
+        - Other issues
     validations:
       required: true
 
   - type: dropdown
     id: environment
     attributes:
-      label: 🖥️ 使用环境
+      label: 🖥️ Operating environment
       options:
-        - 本地运行（直接在电脑上运行）
-        - Docker 容器运行
-        - GitHub Actions 自动运行
-        - 其他方式
+        - Local run (running directly on computer)
+        - Docker container run
+        - GitHub Actions automatic run
+        - Other methods
     validations:
       required: true
 
   - type: textarea
     id: bug-description
     attributes:
-      label: 📝 详细描述问题
-      description: 请详细说明遇到的问题（建议配合截图说明）
+      label: 📝 Detailed problem description
+      description: Please describe the problem in detail (screenshots are recommended)
       placeholder: |
-        请清楚地描述：
-        - 具体发生了什么问题
-        - 问题出现时的情况
-        - 这个问题影响了什么功能
+        Please clearly describe:
+        - What specific problem occurred
+        - The situation when the problem appeared
+        - What function was affected by this problem
 
-        💡 提示：上传问题截图能提供更多信息。
+        💡 Tip: Uploading problem screenshots can provide more information.
     validations:
       required: true
 
   - type: dropdown
     id: system-info
     attributes:
-      label: 💻 系统信息
-      description: 你的电脑系统
+      label: 💻 System information
+      description: Your computer system
       options:
         - Windows 10
         - Windows 11
         - macOS
         - Ubuntu/Linux
-        - 其他系统
-        - 不确定
+        - Other system
+        - Not sure
     validations:
       required: false
 
   - type: textarea
     id: reproduction-steps
     attributes:
-      label: 🔄 怎么重现这个问题
-      description: 如何让这个问题重新出现？（可选，但建议填写）
+      label: 🔄 How to reproduce this problem
+      description: How to make this problem happen again? (Optional but recommended)
       placeholder: |
-        请按步骤描述（建议每个步骤都配截图）：
-        1. 我点击了...
-        2. 然后设置了...
-        3. 接着出现了...
+        Please describe step by step (screenshots for each step are recommended):
+        1. I clicked...
+        2. Then I set...
+        3. Then appeared...
 
-        💡 操作过程的截图特别有用！
+        💡 Screenshots of the operation process are especially useful!
     validations:
       required: false
 
   - type: textarea
     id: expected-behavior
     attributes:
-      label: ✅ 期望的正常情况
-      description: 正常情况下应该是什么样的？（可选）
+      label: ✅ Expected normal behavior
+      description: What should be the normal situation? (Optional)
       placeholder: |
-        描述你期望看到的正常结果...
-        如果有参考图片就更好了！
+        Describe the normal result you expect to see...
+        Reference images would be even better!
     validations:
       required: false
 
   - type: textarea
     id: error-logs
     attributes:
-      label: 📋 错误信息
-      description: 程序显示的错误信息或日志（如果有的话）
+      label: 📋 Error messages
+      description: Error messages or logs displayed by the program (if any)
       placeholder: |
-        如果程序显示了错误信息，请完整复制到这里：
+        If the program shows error messages, please copy them completely here:
 
         ```
-        错误信息内容...
+        Error message content...
         ```
 
     validations:
@@ -171,38 +171,38 @@ body:
   - type: textarea
     id: config-info
     attributes:
-      label: ⚙️ 相关配置
-      description: 与问题相关的配置内容（请隐藏敏感信息如 webhook 地址）
+      label: ⚙️ Related configuration
+      description: Configuration content related to the problem (please hide sensitive information such as webhook URLs)
       placeholder: |
-        相关的配置内容（记得隐藏敏感信息）：
+        Related configuration content (remember to hide sensitive information):
 
         ```yaml
         notification:
           enable_notification: true
           webhooks:
-            feishu_url: "***隐藏***"
+            feishu_url: "***HIDDEN***"
         ```
 
   - type: textarea
     id: screenshots
     attributes:
-      label: 📷 截图补充
-      description: 上传相关截图（强烈推荐！）
+      label: 📷 Screenshot supplements
+      description: Upload relevant screenshots (highly recommended!)
       placeholder: |
-        请拖拽截图到这里，建议包含：
-        - 错误界面截图
-        - 配置设置截图
-        - 操作步骤截图
+        Please drag screenshots here, preferably including:
+        - Error interface screenshots
+        - Configuration settings screenshots
+        - Operation step screenshots
 
-        💡 截图是最直观的问题说明方式！
+        💡 Screenshots are the most intuitive way to describe problems!
 
   - type: textarea
     id: additional-context
     attributes:
-      label: 📎 其他补充信息
-      description: 其他可能有用的信息
+      label: 📎 Additional information
+      description: Other potentially useful information
       placeholder: |
-        - 网络环境特殊情况
-        - 之前是否正常工作过
-        - 最近有没有改动什么设置
-        - 其他你觉得可能相关的信息
+        - Special network environment conditions
+        - Whether it worked normally before
+        - Any recent changes to settings
+        - Other information you think might be relevant

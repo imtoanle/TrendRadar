@@ -59,12 +59,12 @@ def load_config():
     config_path = os.environ.get("CONFIG_PATH", "config/config.yaml")
 
     if not Path(config_path).exists():
-        raise FileNotFoundError(f"配置文件 {config_path} 不存在")
+        raise FileNotFoundError(f"Configuration file {config_path} does not exist")
 
     with open(config_path, "r", encoding="utf-8") as f:
         config_data = yaml.safe_load(f)
 
-    print(f"配置文件加载成功: {config_path}")
+    print(f"Configuration file loaded successfully: {config_path}")
 
     # 构建配置
     config = {
@@ -195,40 +195,40 @@ def load_config():
     # 输出配置来源信息
     notification_sources = []
     if config["FEISHU_WEBHOOK_URL"]:
-        source = "环境变量" if os.environ.get("FEISHU_WEBHOOK_URL") else "配置文件"
-        notification_sources.append(f"飞书({source})")
+        source = "Environment Variable" if os.environ.get("FEISHU_WEBHOOK_URL") else "Configuration File"
+        notification_sources.append(f"Feishu({source})")
     if config["DINGTALK_WEBHOOK_URL"]:
-        source = "环境变量" if os.environ.get("DINGTALK_WEBHOOK_URL") else "配置文件"
-        notification_sources.append(f"钉钉({source})")
+        source = "Environment Variable" if os.environ.get("DINGTALK_WEBHOOK_URL") else "Configuration File"
+        notification_sources.append(f"DingTalk({source})")
     if config["WEWORK_WEBHOOK_URL"]:
-        source = "环境变量" if os.environ.get("WEWORK_WEBHOOK_URL") else "配置文件"
-        notification_sources.append(f"企业微信({source})")
+        source = "Environment Variable" if os.environ.get("WEWORK_WEBHOOK_URL") else "Configuration File"
+        notification_sources.append(f"WeWork({source})")
     if config["TELEGRAM_BOT_TOKEN"] and config["TELEGRAM_CHAT_ID"]:
         token_source = (
-            "环境变量" if os.environ.get("TELEGRAM_BOT_TOKEN") else "配置文件"
+            "Environment Variable" if os.environ.get("TELEGRAM_BOT_TOKEN") else "Configuration File"
         )
-        chat_source = "环境变量" if os.environ.get("TELEGRAM_CHAT_ID") else "配置文件"
+        chat_source = "Environment Variable" if os.environ.get("TELEGRAM_CHAT_ID") else "Configuration File"
         notification_sources.append(f"Telegram({token_source}/{chat_source})")
     if config["EMAIL_FROM"] and config["EMAIL_PASSWORD"] and config["EMAIL_TO"]:
-        from_source = "环境变量" if os.environ.get("EMAIL_FROM") else "配置文件"
-        notification_sources.append(f"邮件({from_source})")
+        from_source = "Environment Variable" if os.environ.get("EMAIL_FROM") else "Configuration File"
+        notification_sources.append(f"Email({from_source})")
 
     if config["NTFY_SERVER_URL"] and config["NTFY_TOPIC"]:
-        server_source = "环境变量" if os.environ.get("NTFY_SERVER_URL") else "配置文件"
+        server_source = "Environment Variable" if os.environ.get("NTFY_SERVER_URL") else "Configuration File"
         notification_sources.append(f"ntfy({server_source})")
 
     if notification_sources:
-        print(f"通知渠道配置来源: {', '.join(notification_sources)}")
+        print(f"Notification channel configuration sources: {', '.join(notification_sources)}")
     else:
-        print("未配置任何通知渠道")
+        print("No notification channels configured")
 
     return config
 
 
-print("正在加载配置...")
+print("Loading configuration...")
 CONFIG = load_config()
-print(f"TrendRadar v{VERSION} 配置加载完成")
-print(f"监控平台数量: {len(CONFIG['PLATFORMS'])}")
+print(f"TrendRadar v{VERSION} configuration loaded successfully")
+print(f"Number of monitoring platforms: {len(CONFIG['PLATFORMS'])}")
 
 
 # === 工具函数 ===
@@ -239,12 +239,12 @@ def get_beijing_time():
 
 def format_date_folder():
     """格式化日期文件夹"""
-    return get_beijing_time().strftime("%Y年%m月%d日")
+    return get_beijing_time().strftime("%Y-%m-%d")
 
 
 def format_time_filename():
     """格式化时间文件名"""
-    return get_beijing_time().strftime("%H时%M分")
+    return get_beijing_time().strftime("%H-%M")
 
 
 def clean_title(title: str) -> str:
@@ -291,14 +291,14 @@ def check_version_update(
         response.raise_for_status()
 
         remote_version = response.text.strip()
-        print(f"当前版本: {current_version}, 远程版本: {remote_version}")
+        print(f"Current version: {current_version}, Remote version: {remote_version}")
 
         # 比较版本
         def parse_version(version_str):
             try:
                 parts = version_str.strip().split(".")
                 if len(parts) != 3:
-                    raise ValueError("版本号格式不正确")
+                    raise ValueError("Incorrect version number format")
                 return int(parts[0]), int(parts[1]), int(parts[2])
             except:
                 return 0, 0, 0
@@ -310,7 +310,7 @@ def check_version_update(
         return need_update, remote_version if need_update else None
 
     except Exception as e:
-        print(f"版本检查失败: {e}")
+        print(f"Version check failed: {e}")
         return False, None
 
 
@@ -371,9 +371,9 @@ class PushRecordManager:
 
                 if (current_time - file_date).days > retention_days:
                     record_file.unlink()
-                    print(f"清理过期推送记录: {record_file.name}")
+                    print(f"Cleaning expired push records: {record_file.name}")
             except Exception as e:
-                print(f"清理记录文件失败 {record_file}: {e}")
+                print(f"Failed to clean record file {record_file}: {e}")
 
     def has_pushed_today(self) -> bool:
         """检查今天是否已经推送过"""
@@ -387,7 +387,7 @@ class PushRecordManager:
                 record = json.load(f)
             return record.get("pushed", False)
         except Exception as e:
-            print(f"读取推送记录失败: {e}")
+            print(f"Failed to read push record: {e}")
             return False
 
     def record_push(self, report_type: str):
@@ -404,9 +404,9 @@ class PushRecordManager:
         try:
             with open(record_file, "w", encoding="utf-8") as f:
                 json.dump(record, f, ensure_ascii=False, indent=2)
-            print(f"推送记录已保存: {report_type} at {now.strftime('%H:%M:%S')}")
+            print(f"Push record saved: {report_type} at {now.strftime('%H:%M:%S')}")
         except Exception as e:
-            print(f"保存推送记录失败: {e}")
+            print(f"Failed to save push record: {e}")
 
     def is_in_time_range(self, start_time: str, end_time: str) -> bool:
         """检查当前时间是否在指定时间范围内"""
@@ -418,17 +418,17 @@ class PushRecordManager:
             try:
                 parts = time_str.strip().split(":")
                 if len(parts) != 2:
-                    raise ValueError(f"时间格式错误: {time_str}")
+                    raise ValueError(f"Time format error: {time_str}")
             
                 hour = int(parts[0])
                 minute = int(parts[1])
             
                 if not (0 <= hour <= 23 and 0 <= minute <= 59):
-                    raise ValueError(f"时间范围错误: {time_str}")
+                    raise ValueError(f"Time range error: {time_str}")
             
                 return f"{hour:02d}:{minute:02d}"
             except Exception as e:
-                print(f"时间格式化错误 '{time_str}': {e}")
+                print(f"Time formatting error '{time_str}': {e}")
                 return time_str
     
         normalized_start = normalize_time(start_time)
@@ -491,10 +491,10 @@ class DataFetcher:
 
                 status = data_json.get("status", "未知")
                 if status not in ["success", "cache"]:
-                    raise ValueError(f"响应状态异常: {status}")
+                    raise ValueError(f"Abnormal response status: {status}")
 
-                status_info = "最新数据" if status == "success" else "缓存数据"
-                print(f"获取 {id_value} 成功（{status_info}）")
+                status_info = "Latest data" if status == "success" else "Cached data"
+                print(f"Retrieved {id_value} successfully ({status_info})")
                 return data_text, id_value, alias
 
             except Exception as e:
@@ -503,10 +503,10 @@ class DataFetcher:
                     base_wait = random.uniform(min_retry_wait, max_retry_wait)
                     additional_wait = (retries - 1) * random.uniform(1, 2)
                     wait_time = base_wait + additional_wait
-                    print(f"请求 {id_value} 失败: {e}. {wait_time:.2f}秒后重试...")
+                    print(f"Request {id_value} failed: {e}. Retrying in {wait_time:.2f} seconds...")
                     time.sleep(wait_time)
                 else:
-                    print(f"请求 {id_value} 失败: {e}")
+                    print(f"Request {id_value} failed: {e}")
                     return None, id_value, alias
         return None, id_value, alias
 
@@ -565,7 +565,7 @@ class DataFetcher:
                 actual_interval = max(50, actual_interval)
                 time.sleep(actual_interval / 1000)
 
-        print(f"成功: {list(results.keys())}, 失败: {failed_ids}")
+        print(f"Success: {list(results.keys())}, Failed: {failed_ids}")
         return results, id_to_name, failed_ids
 
 
@@ -613,7 +613,7 @@ def save_titles_to_file(results: Dict, id_to_name: Dict, failed_ids: List) -> st
             f.write("\n")
 
         if failed_ids:
-            f.write("==== 以下ID请求失败 ====\n")
+            f.write("==== The following IDs failed to request ====\n")
             for id_value in failed_ids:
                 f.write(f"{id_value}\n")
 
@@ -694,7 +694,7 @@ def parse_file_titles(file_path: Path) -> Tuple[Dict, Dict]:
         sections = content.split("\n\n")
 
         for section in sections:
-            if not section.strip() or "==== 以下ID请求失败 ====" in section:
+            if not section.strip() or "==== The following IDs failed to request ====" in section:
                 continue
 
             lines = section.strip().split("\n")
@@ -1077,8 +1077,8 @@ def count_word_frequency(
 
     # 如果没有配置词组，创建一个包含所有新闻的虚拟词组
     if not word_groups:
-        print("频率词配置为空，将显示所有新闻")
-        word_groups = [{"required": [], "normal": [], "group_key": "全部新闻"}]
+        print("Frequency words configuration is empty, will display all news")
+        word_groups = [{"required": [], "normal": [], "group_key": "All News"}]
         filter_words = []  # 清空过滤词，显示所有新闻
 
     is_first_today = is_first_crawl_today()
@@ -1133,7 +1133,7 @@ def count_word_frequency(
         total_input_news = sum(len(titles) for titles in results.values())
         filter_status = (
             "全部显示"
-            if len(word_groups) == 1 and word_groups[0]["group_key"] == "全部新闻"
+            if len(word_groups) == 1 and word_groups[0]["group_key"] == "All News"
             else "频率词过滤"
         )
         print(f"当日汇总模式：处理 {total_input_news} 条新闻，模式：{filter_status}")
@@ -1187,7 +1187,7 @@ def count_word_frequency(
                 normal_words = group["normal"]
 
                 # 如果是"全部新闻"模式，所有标题都匹配第一个（唯一的）词组
-                if len(word_groups) == 1 and word_groups[0]["group_key"] == "全部新闻":
+                if len(word_groups) == 1 and word_groups[0]["group_key"] == "All News":
                     group_key = group["group_key"]
                     word_stats[group_key]["count"] += 1
                     if source_id not in word_stats[group_key]["titles"]:
@@ -1296,7 +1296,7 @@ def count_word_frequency(
             total_input_news = sum(len(titles) for titles in results.values())
             filter_status = (
                 "全部显示"
-                if len(word_groups) == 1 and word_groups[0]["group_key"] == "全部新闻"
+                if len(word_groups) == 1 and word_groups[0]["group_key"] == "All News"
                 else "频率词匹配"
             )
             print(
@@ -1308,7 +1308,7 @@ def count_word_frequency(
                 filter_status = (
                     "全部显示"
                     if len(word_groups) == 1
-                    and word_groups[0]["group_key"] == "全部新闻"
+                    and word_groups[0]["group_key"] == "All News"
                     else "匹配频率词"
                 )
                 print(
@@ -1323,7 +1323,7 @@ def count_word_frequency(
         if is_first_today:
             filter_status = (
                 "全部显示"
-                if len(word_groups) == 1 and word_groups[0]["group_key"] == "全部新闻"
+                if len(word_groups) == 1 and word_groups[0]["group_key"] == "All News"
                 else "频率词匹配"
             )
             print(
@@ -1333,7 +1333,7 @@ def count_word_frequency(
             matched_count = sum(stat["count"] for stat in word_stats.values())
             filter_status = (
                 "全部显示"
-                if len(word_groups) == 1 and word_groups[0]["group_key"] == "全部新闻"
+                if len(word_groups) == 1 and word_groups[0]["group_key"] == "All News"
                 else "频率词匹配"
             )
             print(
@@ -2709,7 +2709,7 @@ def render_feishu_content(
     text_content = ""
 
     if report_data["stats"]:
-        text_content += f"📊 **热点词汇统计**\n\n"
+        text_content += f"📊 **Trending Keywords Statistics**\n\n"
 
     total_count = len(report_data["stats"])
 
@@ -2742,13 +2742,13 @@ def render_feishu_content(
         if mode == "incremental":
             mode_text = "增量模式下暂无新增匹配的热点词汇"
         elif mode == "current":
-            mode_text = "当前榜单模式下暂无匹配的热点词汇"
+            mode_text = "No matching trending keywords found in current ranking mode"
         else:
-            mode_text = "暂无匹配的热点词汇"
+            mode_text = "No matching trending keywords found"
         text_content = f"📭 {mode_text}\n\n"
 
     if report_data["new_titles"]:
-        if text_content and "暂无匹配" not in text_content:
+        if text_content and "No matching" not in text_content:
             text_content += f"\n{CONFIG['FEISHU_MESSAGE_SEPARATOR']}\n\n"
 
         text_content += (
@@ -2771,7 +2771,7 @@ def render_feishu_content(
             text_content += "\n"
 
     if report_data["failed_ids"]:
-        if text_content and "暂无匹配" not in text_content:
+        if text_content and "No matching" not in text_content:
             text_content += f"\n{CONFIG['FEISHU_MESSAGE_SEPARATOR']}\n\n"
 
         text_content += "⚠️ **数据获取失败的平台：**\n\n"
@@ -2807,7 +2807,7 @@ def render_dingtalk_content(
     text_content += "---\n\n"
 
     if report_data["stats"]:
-        text_content += f"📊 **热点词汇统计**\n\n"
+        text_content += f"📊 **Trending Keywords Statistics**\n\n"
 
         total_count = len(report_data["stats"])
 
@@ -2840,13 +2840,13 @@ def render_dingtalk_content(
         if mode == "incremental":
             mode_text = "增量模式下暂无新增匹配的热点词汇"
         elif mode == "current":
-            mode_text = "当前榜单模式下暂无匹配的热点词汇"
+            mode_text = "No matching trending keywords found in current ranking mode"
         else:
-            mode_text = "暂无匹配的热点词汇"
+            mode_text = "No matching trending keywords found"
         text_content += f"📭 {mode_text}\n\n"
 
     if report_data["new_titles"]:
-        if text_content and "暂无匹配" not in text_content:
+        if text_content and "No matching" not in text_content:
             text_content += f"\n---\n\n"
 
         text_content += (
@@ -2867,7 +2867,7 @@ def render_dingtalk_content(
             text_content += "\n"
 
     if report_data["failed_ids"]:
-        if text_content and "暂无匹配" not in text_content:
+        if text_content and "No matching" not in text_content:
             text_content += f"\n---\n\n"
 
         text_content += "⚠️ **数据获取失败的平台：**\n\n"
@@ -2947,15 +2947,15 @@ def split_content_into_batches(
     stats_header = ""
     if report_data["stats"]:
         if format_type == "wework":
-            stats_header = f"📊 **热点词汇统计**\n\n"
+            stats_header = f"📊 **Trending Keywords Statistics**\n\n"
         elif format_type == "telegram":
             stats_header = f"📊 热点词汇统计\n\n"
         elif format_type == "ntfy":
-            stats_header = f"📊 **热点词汇统计**\n\n"
+            stats_header = f"📊 **Trending Keywords Statistics**\n\n"
         elif format_type == "feishu":
-            stats_header = f"📊 **热点词汇统计**\n\n"
+            stats_header = f"📊 **Trending Keywords Statistics**\n\n"
         elif format_type == "dingtalk":
-            stats_header = f"📊 **热点词汇统计**\n\n"
+            stats_header = f"📊 **Trending Keywords Statistics**\n\n"
 
     current_batch = base_header
     current_batch_has_content = False
@@ -2968,9 +2968,9 @@ def split_content_into_batches(
         if mode == "incremental":
             mode_text = "增量模式下暂无新增匹配的热点词汇"
         elif mode == "current":
-            mode_text = "当前榜单模式下暂无匹配的热点词汇"
+            mode_text = "No matching trending keywords found in current ranking mode"
         else:
-            mode_text = "暂无匹配的热点词汇"
+            mode_text = "No matching trending keywords found"
         simple_content = f"📭 {mode_text}\n\n"
         final_content = base_header + simple_content + base_footer
         batches.append(final_content)
@@ -3506,9 +3506,9 @@ def send_to_feishu(
         if len(batches) > 1:
             batch_header = f"**[第 {i}/{len(batches)} 批次]**\n\n"
             # 将批次标识插入到适当位置（在统计标题之后）
-            if "📊 **热点词汇统计**" in batch_content:
+            if "📊 **Trending Keywords Statistics**" in batch_content:
                 batch_content = batch_content.replace(
-                    "📊 **热点词汇统计**\n\n", f"📊 **热点词汇统计** {batch_header}"
+                    "📊 **Trending Keywords Statistics**\n\n", f"📊 **Trending Keywords Statistics** {batch_header}"
                 )
             else:
                 # 如果没有统计标题，直接在开头添加
@@ -3596,9 +3596,9 @@ def send_to_dingtalk(
         if len(batches) > 1:
             batch_header = f"**[第 {i}/{len(batches)} 批次]**\n\n"
             # 将批次标识插入到适当位置（在标题之后）
-            if "📊 **热点词汇统计**" in batch_content:
+            if "📊 **Trending Keywords Statistics**" in batch_content:
                 batch_content = batch_content.replace(
-                    "📊 **热点词汇统计**\n\n", f"📊 **热点词汇统计** {batch_header}\n\n"
+                    "📊 **Trending Keywords Statistics**\n\n", f"📊 **Trending Keywords Statistics** {batch_header}\n\n"
                 )
             else:
                 # 如果没有统计标题，直接在开头添加
@@ -4138,7 +4138,7 @@ class NewsAnalyzer:
         "incremental": {
             "mode_name": "增量模式",
             "description": "增量模式（只关注新增新闻，无新增时不推送）",
-            "realtime_report_type": "实时增量",
+            "realtime_report_type": "Realtime Incremental",
             "summary_report_type": "当日汇总",
             "should_send_realtime": True,
             "should_generate_summary": True,
@@ -4147,7 +4147,7 @@ class NewsAnalyzer:
         "current": {
             "mode_name": "当前榜单模式",
             "description": "当前榜单模式（当前榜单匹配新闻 + 新增新闻区域 + 按时推送）",
-            "realtime_report_type": "实时当前榜单",
+            "realtime_report_type": "Realtime Current Ranking",
             "summary_report_type": "当前榜单汇总",
             "should_send_realtime": True,
             "should_generate_summary": True,
@@ -4397,7 +4397,7 @@ class NewsAnalyzer:
             and not self._has_valid_content(stats, new_titles)
         ):
             mode_strategy = self._get_mode_strategy()
-            if "实时" in report_type:
+            if "Realtime" in report_type:
                 print(
                     f"跳过实时推送通知：{mode_strategy['mode_name']}下未检测到匹配的新闻"
                 )

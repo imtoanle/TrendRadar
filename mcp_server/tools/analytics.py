@@ -1714,14 +1714,14 @@ class AnalyticsTools:
                         "keyword": keyword,
                         "current_count": current_count,
                         "previous_count": previous_count,
-                        "growth_rate": round(growth_rate, 2) if growth_rate != float('inf') else "新话题",
+                        "growth_rate": round(growth_rate, 2) if growth_rate != float('inf') else "New Topic",
                         "sample_titles": current_keyword_titles[keyword][:3],
                         "alert_level": "高" if growth_rate > threshold * 2 else "中"
                     })
 
             # 按增长率排序
             viral_topics.sort(
-                key=lambda x: x["current_count"] if x["growth_rate"] == "新话题" else x["growth_rate"],
+                key=lambda x: x["current_count"] if x["growth_rate"] == "New Topic" else x["growth_rate"],
                 reverse=True
             )
 

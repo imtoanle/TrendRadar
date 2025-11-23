@@ -79,7 +79,7 @@ class ParserService:
                 sections = content.split("\n\n")
 
                 for section in sections:
-                    if not section.strip() or "==== 以下ID请求失败 ====" in section:
+                    if not section.strip() or "==== The following IDs failed to request ====" in section:
                         continue
 
                     lines = section.strip().split("\n")
