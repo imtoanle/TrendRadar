@@ -2,7 +2,7 @@ services:
   trend-radar:
     build:
       context: ..
-      dockerfile: docker/Dockerfile
+      dockerfile: Dockerfile
     container_name: trend-radar
     restart: unless-stopped
 

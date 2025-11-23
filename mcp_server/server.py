@@ -1,14 +1,14 @@
 """
-TrendRadar MCP Server - FastMCP 2.0 实现
+TrendRadar MCP Server - OpenAI/ChatGPT MCP 兼容实现
 
-使用 FastMCP 2.0 提供生产级 MCP 工具服务器。
-支持 stdio 和 HTTP 两种传输模式。
+使用官方 MCP Python SDK 提供生产级 MCP 工具服务器。
+支持 stdio、SSE 以及 Streamable HTTP 多种传输模式。
 """
 
 import json
 from typing import List, Optional, Dict
 
-from fastmcp import FastMCP
+from mcp.server.fastmcp import FastMCP
 
 from .tools.data_query import DataQueryTools
 from .tools.analytics import AnalyticsTools
@@ -37,7 +37,7 @@ def _get_tools(project_root: Optional[str] = None):
 
 # ==================== 数据查询工具 ====================
 
-@mcp.tool
+@mcp.tool()
 async def get_latest_news(
     platforms: Optional[List[str]] = None,
     limit: int = 50,
@@ -75,7 +75,7 @@ async def get_latest_news(
     return json.dumps(result, ensure_ascii=False, indent=2)
 
 
-@mcp.tool
+@mcp.tool()
 async def get_trending_topics(
     top_n: int = 10,
     mode: str = 'current'
@@ -100,7 +100,7 @@ async def get_trending_topics(
     return json.dumps(result, ensure_ascii=False, indent=2)
 
 
-@mcp.tool
+@mcp.tool()
 async def get_news_by_date(
     date_query: Optional[str] = None,
     platforms: Optional[List[str]] = None,
@@ -151,7 +151,7 @@ async def get_news_by_date(
 
 # ==================== 高级数据分析工具 ====================
 
-@mcp.tool
+@mcp.tool()
 async def analyze_topic_trend(
     topic: str,
     analysis_type: str = "trend",
@@ -217,7 +217,7 @@ async def analyze_topic_trend(
     return json.dumps(result, ensure_ascii=False, indent=2)
 
 
-@mcp.tool
+@mcp.tool()
 async def analyze_data_insights(
     insight_type: str = "platform_compare",
     topic: Optional[str] = None,
@@ -260,7 +260,7 @@ async def analyze_data_insights(
     return json.dumps(result, ensure_ascii=False, indent=2)
 
 
-@mcp.tool
+@mcp.tool()
 async def analyze_sentiment(
     topic: Optional[str] = None,
     platforms: Optional[List[str]] = None,
@@ -308,7 +308,7 @@ async def analyze_sentiment(
     return json.dumps(result, ensure_ascii=False, indent=2)
 
 
-@mcp.tool
+@mcp.tool()
 async def find_similar_news(
     reference_title: str,
     threshold: float = 0.6,
@@ -344,7 +344,7 @@ async def find_similar_news(
     return json.dumps(result, ensure_ascii=False, indent=2)
 
 
-@mcp.tool
+@mcp.tool()
 async def generate_summary_report(
     report_type: str = "daily",
     date_range: Optional[Dict[str, str]] = None
@@ -372,7 +372,7 @@ async def generate_summary_report(
 
 # ==================== 智能检索工具 ====================
 
-@mcp.tool
+@mcp.tool()
 async def search_news(
     query: str,
     search_mode: str = "keyword",
@@ -455,7 +455,7 @@ async def search_news(
     return json.dumps(result, ensure_ascii=False, indent=2)
 
 
-@mcp.tool
+@mcp.tool()
 async def search_related_news_history(
     reference_text: str,
     time_preset: str = "yesterday",
@@ -501,7 +501,7 @@ async def search_related_news_history(
 
 # ==================== 配置与系统管理工具 ====================
 
-@mcp.tool
+@mcp.tool()
 async def get_current_config(
     section: str = "all"
 ) -> str:
@@ -524,7 +524,7 @@ async def get_current_config(
     return json.dumps(result, ensure_ascii=False, indent=2)
 
 
-@mcp.tool
+@mcp.tool()
 async def get_system_status() -> str:
     """
     获取系统运行状态和健康检查信息
@@ -539,7 +539,7 @@ async def get_system_status() -> str:
     return json.dumps(result, ensure_ascii=False, indent=2)
 
 
-@mcp.tool
+@mcp.tool()
 async def trigger_crawl(
     platforms: Optional[List[str]] = None,
     save_to_local: bool = False,
@@ -576,38 +576,73 @@ async def trigger_crawl(
 
 # ==================== 启动入口 ====================
 
+def _normalize_mount_path(path: str) -> str:
+    """标准化 SSE mount path，保证与 FastMCP 规范一致。"""
+    if not path:
+        return '/'
+    normalized = path
+    if not normalized.startswith('/'):
+        normalized = '/' + normalized
+    if len(normalized) > 1 and normalized.endswith('/'):
+        normalized = normalized.rstrip('/')
+    return normalized or '/'
+
+
 def run_server(
     project_root: Optional[str] = None,
     transport: str = 'stdio',
     host: str = '0.0.0.0',
-    port: int = 3333
+    port: int = 3333,
+    mount_path: str = '/',
+    http_path: str = '/mcp'
 ):
     """
-    启动 MCP 服务器
+    启动 MCP 服务器（兼容 ChatGPT/Claude 官方 MCP 客户端）
 
     Args:
         project_root: 项目根目录路径
-        transport: 传输模式，'stdio' 或 'http'
-        host: HTTP模式的监听地址，默认 0.0.0.0
-        port: HTTP模式的监听端口，默认 3333
+        transport: 传输模式：'stdio'、'sse'、'streamable-http'
+        host: 网络监听地址（SSE/Streamable HTTP 用）
+        port: 网络监听端口（SSE/Streamable HTTP 用）
+        mount_path: SSE 挂载路径，默认 '/'
+        http_path: Streamable HTTP 接入路径，默认 '/mcp'
     """
     # 初始化工具实例
     _get_tools(project_root)
 
+    # 网络配置
+    normalized_mount = _normalize_mount_path(mount_path)
+    if not http_path.startswith('/'):
+        http_path = '/' + http_path
+    mcp.settings.host = host
+    mcp.settings.port = port
+    mcp.settings.streamable_http_path = http_path
+
     # 打印启动信息
     print()
     print("=" * 60)
-    print("  TrendRadar MCP Server - FastMCP 2.0")
+    print("  TrendRadar MCP Server - 官方 MCP Python SDK")
     print("=" * 60)
     print(f"  传输模式: {transport.upper()}")
 
     if transport == 'stdio':
         print("  协议: MCP over stdio (标准输入输出)")
         print("  说明: 通过标准输入输出与 MCP 客户端通信")
-    elif transport == 'http':
+    elif transport == 'sse':
+        message_path = mcp.settings.message_path or "/messages/"
+        endpoint = normalized_mount if normalized_mount != '/' else ''
+        if not message_path.startswith('/'):
+            message_path = '/' + message_path
+        normalized_endpoint = f"{endpoint}{message_path}"
         print(f"  监听地址: http://{host}:{port}")
-        print(f"  HTTP端点: http://{host}:{port}/mcp")
-        print("  协议: MCP over HTTP (生产环境)")
+        print(f"  SSE 消息端点: http://{host}:{port}{normalized_endpoint}")
+        print("  协议: MCP over SSE (适用于 ChatGPT MCP 网络部署)")
+    elif transport == 'streamable-http':
+        http_endpoint = f"http://{host}:{port}{http_path}"
+        print(f"  Streamable HTTP 端点: {http_endpoint}")
+        print("  协议: MCP Streamable HTTP (Claude/Inspector/ChatGPT)")
+    else:
+        raise ValueError(f"不支持的传输模式: {transport}")
 
     if project_root:
         print(f"  项目目录: {project_root}")
@@ -642,14 +677,10 @@ def run_server(
     # 根据传输模式运行服务器
     if transport == 'stdio':
         mcp.run(transport='stdio')
-    elif transport == 'http':
-        # HTTP 模式（生产推荐）
-        mcp.run(
-            transport='http',
-            host=host,
-            port=port,
-            path='/mcp'  # HTTP 端点路径
-        )
+    elif transport == 'sse':
+        mcp.run(transport='sse', mount_path=normalized_mount)
+    elif transport == 'streamable-http':
+        mcp.run(transport='streamable-http')
     else:
         raise ValueError(f"不支持的传输模式: {transport}")
 
@@ -666,20 +697,30 @@ if __name__ == '__main__':
     )
     parser.add_argument(
         '--transport',
-        choices=['stdio', 'http'],
+        choices=['stdio', 'sse', 'streamable-http'],
         default='stdio',
-        help='传输模式：stdio (默认) 或 http (生产环境)'
+        help='传输模式：stdio (默认) / sse (ChatGPT) / streamable-http'
     )
     parser.add_argument(
         '--host',
         default='0.0.0.0',
-        help='HTTP模式的监听地址，默认 0.0.0.0'
+        help='SSE/HTTP 模式的监听地址，默认 0.0.0.0'
     )
     parser.add_argument(
         '--port',
         type=int,
         default=3333,
-        help='HTTP模式的监听端口，默认 3333'
+        help='SSE/HTTP 模式的监听端口，默认 3333'
+    )
+    parser.add_argument(
+        '--mount-path',
+        default='/',
+        help='SSE 挂载路径（默认 /，例如 /trendradar）'
+    )
+    parser.add_argument(
+        '--http-path',
+        default='/mcp',
+        help='Streamable HTTP 接入路径（默认 /mcp）'
     )
     parser.add_argument(
         '--project-root',
@@ -692,5 +733,7 @@ if __name__ == '__main__':
         project_root=args.project_root,
         transport=args.transport,
         host=args.host,
-        port=args.port
+        port=args.port,
+        mount_path=args.mount_path,
+        http_path=args.http_path
     )
