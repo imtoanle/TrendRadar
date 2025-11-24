@@ -23,13 +23,13 @@ import yaml
 VERSION = "3.2.0"
 
 
-# === SMTP邮件配置 ===
+# === SMTP Email Configuration ===
 SMTP_CONFIGS = {
-    # Gmail（使用 STARTTLS）
+    # Gmail (using STARTTLS)
     "gmail.com": {"server": "smtp.gmail.com", "port": 587, "encryption": "TLS"},
-    # QQ邮箱（使用 SSL，更稳定）
+    # QQ Mail (using SSL, more stable)
     "qq.com": {"server": "smtp.qq.com", "port": 465, "encryption": "SSL"},
-    # Outlook（使用 STARTTLS）
+    # Outlook (using STARTTLS)
     "outlook.com": {
         "server": "smtp-mail.outlook.com",
         "port": 587,
@@ -41,32 +41,32 @@ SMTP_CONFIGS = {
         "encryption": "TLS",
     },
     "live.com": {"server": "smtp-mail.outlook.com", "port": 587, "encryption": "TLS"},
-    # 网易邮箱（使用 SSL，更稳定）
+    # NetEase Mail (using SSL, more stable)
     "163.com": {"server": "smtp.163.com", "port": 465, "encryption": "SSL"},
     "126.com": {"server": "smtp.126.com", "port": 465, "encryption": "SSL"},
-    # 新浪邮箱（使用 SSL）
+    # Sina Mail (using SSL)
     "sina.com": {"server": "smtp.sina.com", "port": 465, "encryption": "SSL"},
-    # 搜狐邮箱（使用 SSL）
+    # Sohu Mail (using SSL)
     "sohu.com": {"server": "smtp.sohu.com", "port": 465, "encryption": "SSL"},
-    # 天翼邮箱（使用 SSL）
+    # Tianyi Mail (using SSL)
     "189.cn": {"server": "smtp.189.cn", "port": 465, "encryption": "SSL"},
 }
 
 
-# === 配置管理 ===
+# === Configuration Management ===
 def load_config():
-    """加载配置文件"""
+    """Load configuration file"""
     config_path = os.environ.get("CONFIG_PATH", "config/config.yaml")
 
     if not Path(config_path).exists():
-        raise FileNotFoundError(f"配置文件 {config_path} 不存在")
+        raise FileNotFoundError(f"Configuration file {config_path} does not exist")
 
     with open(config_path, "r", encoding="utf-8") as f:
         config_data = yaml.safe_load(f)
 
-    print(f"配置文件加载成功: {config_path}")
+    print(f"Configuration file loaded successfully: {config_path}")
 
-    # 构建配置
+    # Build configuration
     config = {
         "VERSION_CHECK_URL": config_data["app"]["version_check_url"],
         "SHOW_VERSION_UPDATE": config_data["app"]["show_version_update"],
@@ -141,7 +141,7 @@ def load_config():
         "PLATFORMS": config_data["platforms"],
     }
 
-    # 通知渠道配置（环境变量优先）
+    # Notification channel configuration (environment variables take priority)
     notification = config_data.get("notification", {})
     webhooks = notification.get("webhooks", {})
 
@@ -164,7 +164,7 @@ def load_config():
         "TELEGRAM_CHAT_ID", ""
     ).strip() or webhooks.get("telegram_chat_id", "")
 
-    # 邮件配置
+    # Email configuration
     config["EMAIL_FROM"] = os.environ.get("EMAIL_FROM", "").strip() or webhooks.get(
         "email_from", ""
     )
@@ -181,7 +181,7 @@ def load_config():
         "EMAIL_SMTP_PORT", ""
     ).strip() or webhooks.get("email_smtp_port", "")
 
-    # ntfy配置
+    # ntfy configuration
     config["NTFY_SERVER_URL"] = os.environ.get(
         "NTFY_SERVER_URL", "https://ntfy.sh"
     ).strip() or webhooks.get("ntfy_server_url", "https://ntfy.sh")
@@ -192,63 +192,63 @@ def load_config():
         "ntfy_token", ""
     )
 
-    # 输出配置来源信息
+    # Output configuration source information
     notification_sources = []
     if config["FEISHU_WEBHOOK_URL"]:
-        source = "环境变量" if os.environ.get("FEISHU_WEBHOOK_URL") else "配置文件"
-        notification_sources.append(f"飞书({source})")
+        source = "Environment Variable" if os.environ.get("FEISHU_WEBHOOK_URL") else "Config File"
+        notification_sources.append(f"Feishu({source})")
     if config["DINGTALK_WEBHOOK_URL"]:
-        source = "环境变量" if os.environ.get("DINGTALK_WEBHOOK_URL") else "配置文件"
-        notification_sources.append(f"钉钉({source})")
+        source = "Environment Variable" if os.environ.get("DINGTALK_WEBHOOK_URL") else "Config File"
+        notification_sources.append(f"DingTalk({source})")
     if config["WEWORK_WEBHOOK_URL"]:
-        source = "环境变量" if os.environ.get("WEWORK_WEBHOOK_URL") else "配置文件"
-        notification_sources.append(f"企业微信({source})")
+        source = "Environment Variable" if os.environ.get("WEWORK_WEBHOOK_URL") else "Config File"
+        notification_sources.append(f"WeWork({source})")
     if config["TELEGRAM_BOT_TOKEN"] and config["TELEGRAM_CHAT_ID"]:
         token_source = (
-            "环境变量" if os.environ.get("TELEGRAM_BOT_TOKEN") else "配置文件"
+            "Environment Variable" if os.environ.get("TELEGRAM_BOT_TOKEN") else "Config File"
         )
-        chat_source = "环境变量" if os.environ.get("TELEGRAM_CHAT_ID") else "配置文件"
+        chat_source = "Environment Variable" if os.environ.get("TELEGRAM_CHAT_ID") else "Config File"
         notification_sources.append(f"Telegram({token_source}/{chat_source})")
     if config["EMAIL_FROM"] and config["EMAIL_PASSWORD"] and config["EMAIL_TO"]:
-        from_source = "环境变量" if os.environ.get("EMAIL_FROM") else "配置文件"
-        notification_sources.append(f"邮件({from_source})")
+        from_source = "Environment Variable" if os.environ.get("EMAIL_FROM") else "Config File"
+        notification_sources.append(f"Email({from_source})")
 
     if config["NTFY_SERVER_URL"] and config["NTFY_TOPIC"]:
-        server_source = "环境变量" if os.environ.get("NTFY_SERVER_URL") else "配置文件"
+        server_source = "Environment Variable" if os.environ.get("NTFY_SERVER_URL") else "Config File"
         notification_sources.append(f"ntfy({server_source})")
 
     if notification_sources:
-        print(f"通知渠道配置来源: {', '.join(notification_sources)}")
+        print(f"Notification channel configuration sources: {', '.join(notification_sources)}")
     else:
-        print("未配置任何通知渠道")
+        print("No notification channels configured")
 
     return config
 
 
-print("正在加载配置...")
+print("Loading configuration...")
 CONFIG = load_config()
-print(f"TrendRadar v{VERSION} 配置加载完成")
-print(f"监控平台数量: {len(CONFIG['PLATFORMS'])}")
+print(f"TrendRadar v{VERSION} configuration loaded")
+print(f"Number of monitoring platforms: {len(CONFIG['PLATFORMS'])}")
 
 
-# === 工具函数 ===
+# === Utility Functions ===
 def get_beijing_time():
-    """获取北京时间"""
+    """Get Beijing time"""
     return datetime.now(pytz.timezone("Asia/Ho_Chi_Minh"))
 
 
 def format_date_folder():
-    """格式化日期文件夹"""
-    return get_beijing_time().strftime("%Y年%m月%d日")
+    """Format date folder"""
+    return get_beijing_time().strftime("%Y-%m-%d")
 
 
 def format_time_filename():
-    """格式化时间文件名"""
-    return get_beijing_time().strftime("%H时%M分")
+    """Format time filename"""
+    return get_beijing_time().strftime("%H-%M")
 
 
 def clean_title(title: str) -> str:
-    """清理标题中的特殊字符"""
+    """Clean special characters from title"""
     if not isinstance(title, str):
         title = str(title)
     cleaned_title = title.replace("\n", " ").replace("\r", " ")
@@ -258,12 +258,12 @@ def clean_title(title: str) -> str:
 
 
 def ensure_directory_exists(directory: str):
-    """确保目录存在"""
+    """Ensure directory exists"""
     Path(directory).mkdir(parents=True, exist_ok=True)
 
 
 def get_output_path(subfolder: str, filename: str) -> str:
-    """获取输出路径"""
+    """Get output path"""
     date_folder = format_date_folder()
     output_dir = Path("output") / date_folder / subfolder
     ensure_directory_exists(str(output_dir))
@@ -273,7 +273,7 @@ def get_output_path(subfolder: str, filename: str) -> str:
 def check_version_update(
     current_version: str, version_url: str, proxy_url: Optional[str] = None
 ) -> Tuple[bool, Optional[str]]:
-    """检查版本更新"""
+    """Check for version updates"""
     try:
         proxies = None
         if proxy_url:
@@ -291,14 +291,14 @@ def check_version_update(
         response.raise_for_status()
 
         remote_version = response.text.strip()
-        print(f"当前版本: {current_version}, 远程版本: {remote_version}")
+        print(f"Current version: {current_version}, Remote version: {remote_version}")
 
-        # 比较版本
+        # Compare versions
         def parse_version(version_str):
             try:
                 parts = version_str.strip().split(".")
                 if len(parts) != 3:
-                    raise ValueError("版本号格式不正确")
+                    raise ValueError("Incorrect version number format")
                 return int(parts[0]), int(parts[1]), int(parts[2])
             except:
                 return 0, 0, 0
@@ -310,12 +310,12 @@ def check_version_update(
         return need_update, remote_version if need_update else None
 
     except Exception as e:
-        print(f"版本检查失败: {e}")
+        print(f"Version check failed: {e}")
         return False, None
 
 
 def is_first_crawl_today() -> bool:
-    """检测是否是当天第一次爬取"""
+    """Check if this is the first crawl of the day"""
     date_folder = format_date_folder()
     txt_dir = Path("output") / date_folder / "txt"
 
@@ -327,7 +327,7 @@ def is_first_crawl_today() -> bool:
 
 
 def html_escape(text: str) -> str:
-    """HTML转义"""
+    """HTML escape"""
     if not isinstance(text, str):
         text = str(text)
 
@@ -340,9 +340,9 @@ def html_escape(text: str) -> str:
     )
 
 
-# === 推送记录管理 ===
+# === Push Record Management ===
 class PushRecordManager:
-    """推送记录管理器"""
+    """Push Record Manager"""
 
     def __init__(self):
         self.record_dir = Path("output") / ".push_records"
@@ -350,16 +350,16 @@ class PushRecordManager:
         self.cleanup_old_records()
 
     def ensure_record_dir(self):
-        """确保记录目录存在"""
+        """Ensure record directory exists"""
         self.record_dir.mkdir(parents=True, exist_ok=True)
 
     def get_today_record_file(self) -> Path:
-        """获取今天的记录文件路径"""
+        """Get today's record file path"""
         today = get_beijing_time().strftime("%Y%m%d")
         return self.record_dir / f"push_record_{today}.json"
 
     def cleanup_old_records(self):
-        """清理过期的推送记录"""
+        """Clean up expired push records"""
         retention_days = CONFIG["PUSH_WINDOW"]["RECORD_RETENTION_DAYS"]
         current_time = get_beijing_time()
 
@@ -371,12 +371,12 @@ class PushRecordManager:
 
                 if (current_time - file_date).days > retention_days:
                     record_file.unlink()
-                    print(f"清理过期推送记录: {record_file.name}")
+                    print(f"Cleaning expired push record: {record_file.name}")
             except Exception as e:
-                print(f"清理记录文件失败 {record_file}: {e}")
+                print(f"Failed to clean record file {record_file}: {e}")
 
     def has_pushed_today(self) -> bool:
-        """检查今天是否已经推送过"""
+        """Check if already pushed today"""
         record_file = self.get_today_record_file()
 
         if not record_file.exists():
@@ -387,11 +387,11 @@ class PushRecordManager:
                 record = json.load(f)
             return record.get("pushed", False)
         except Exception as e:
-            print(f"读取推送记录失败: {e}")
+            print(f"Failed to read push record: {e}")
             return False
 
     def record_push(self, report_type: str):
-        """记录推送"""
+        """Record push"""
         record_file = self.get_today_record_file()
         now = get_beijing_time()
 
@@ -404,31 +404,31 @@ class PushRecordManager:
         try:
             with open(record_file, "w", encoding="utf-8") as f:
                 json.dump(record, f, ensure_ascii=False, indent=2)
-            print(f"推送记录已保存: {report_type} at {now.strftime('%H:%M:%S')}")
+            print(f"Push record saved: {report_type} at {now.strftime('%H:%M:%S')}")
         except Exception as e:
-            print(f"保存推送记录失败: {e}")
+            print(f"Failed to save push record: {e}")
 
     def is_in_time_range(self, start_time: str, end_time: str) -> bool:
-        """检查当前时间是否在指定时间范围内"""
+        """Check if current time is within specified time range"""
         now = get_beijing_time()
         current_time = now.strftime("%H:%M")
     
         def normalize_time(time_str: str) -> str:
-            """将时间字符串标准化为 HH:MM 格式"""
+            """Normalize time string to HH:MM format"""
             try:
                 parts = time_str.strip().split(":")
                 if len(parts) != 2:
-                    raise ValueError(f"时间格式错误: {time_str}")
+                    raise ValueError(f"Invalid time format: {time_str}")
             
                 hour = int(parts[0])
                 minute = int(parts[1])
             
                 if not (0 <= hour <= 23 and 0 <= minute <= 59):
-                    raise ValueError(f"时间范围错误: {time_str}")
+                    raise ValueError(f"Invalid time range: {time_str}")
             
                 return f"{hour:02d}:{minute:02d}"
             except Exception as e:
-                print(f"时间格式化错误 '{time_str}': {e}")
+                print(f"Time formatting error '{time_str}': {e}")
                 return time_str
     
         normalized_start = normalize_time(start_time)
@@ -438,14 +438,14 @@ class PushRecordManager:
         result = normalized_start <= normalized_current <= normalized_end
     
         if not result:
-            print(f"时间窗口判断：当前 {normalized_current}，窗口 {normalized_start}-{normalized_end}")
+            print(f"Time window check: current {normalized_current}, window {normalized_start}-{normalized_end}")
     
         return result
 
 
-# === 数据获取 ===
+# === Data Fetching ===
 class DataFetcher:
-    """数据获取器"""
+    """Data Fetcher"""
 
     def __init__(self, proxy_url: Optional[str] = None):
         self.proxy_url = proxy_url
@@ -457,7 +457,7 @@ class DataFetcher:
         min_retry_wait: int = 3,
         max_retry_wait: int = 5,
     ) -> Tuple[Optional[str], str, str]:
-        """获取指定ID数据，支持重试"""
+        """Fetch data for specified ID with retry support"""
         if isinstance(id_info, tuple):
             id_value, alias = id_info
         else:
@@ -489,12 +489,12 @@ class DataFetcher:
                 data_text = response.text
                 data_json = json.loads(data_text)
 
-                status = data_json.get("status", "未知")
+                status = data_json.get("status", "unknown")
                 if status not in ["success", "cache"]:
-                    raise ValueError(f"响应状态异常: {status}")
+                    raise ValueError(f"Abnormal response status: {status}")
 
-                status_info = "最新数据" if status == "success" else "缓存数据"
-                print(f"获取 {id_value} 成功（{status_info}）")
+                status_info = "latest data" if status == "success" else "cached data"
+                print(f"Successfully fetched {id_value} ({status_info})")
                 return data_text, id_value, alias
 
             except Exception as e:
@@ -503,10 +503,10 @@ class DataFetcher:
                     base_wait = random.uniform(min_retry_wait, max_retry_wait)
                     additional_wait = (retries - 1) * random.uniform(1, 2)
                     wait_time = base_wait + additional_wait
-                    print(f"请求 {id_value} 失败: {e}. {wait_time:.2f}秒后重试...")
+                    print(f"Request {id_value} failed: {e}. Retrying in {wait_time:.2f} seconds...")
                     time.sleep(wait_time)
                 else:
-                    print(f"请求 {id_value} 失败: {e}")
+                    print(f"Request {id_value} failed: {e}")
                     return None, id_value, alias
         return None, id_value, alias
 
@@ -515,7 +515,7 @@ class DataFetcher:
         ids_list: List[Union[str, Tuple[str, str]]],
         request_interval: int = CONFIG["REQUEST_INTERVAL"],
     ) -> Tuple[Dict, Dict, List]:
-        """爬取多个网站数据"""
+        """Crawl data from multiple websites"""
         results = {}
         id_to_name = {}
         failed_ids = []
@@ -536,7 +536,7 @@ class DataFetcher:
                     results[id_value] = {}
                     for index, item in enumerate(data.get("items", []), 1):
                         title = item.get("title")
-                        # 跳过无效标题（None、float、空字符串）
+                        # Skip invalid titles (None, float, empty strings)
                         if title is None or isinstance(title, float) or not str(title).strip():
                             continue
                         title = str(title).strip()
@@ -552,10 +552,10 @@ class DataFetcher:
                                 "mobileUrl": mobile_url,
                             }
                 except json.JSONDecodeError:
-                    print(f"解析 {id_value} 响应失败")
+                    print(f"Failed to parse {id_value} response")
                     failed_ids.append(id_value)
                 except Exception as e:
-                    print(f"处理 {id_value} 数据出错: {e}")
+                    print(f"Error processing {id_value} data: {e}")
                     failed_ids.append(id_value)
             else:
                 failed_ids.append(id_value)
@@ -565,25 +565,25 @@ class DataFetcher:
                 actual_interval = max(50, actual_interval)
                 time.sleep(actual_interval / 1000)
 
-        print(f"成功: {list(results.keys())}, 失败: {failed_ids}")
+        print(f"Success: {list(results.keys())}, Failed: {failed_ids}")
         return results, id_to_name, failed_ids
 
 
-# === 数据处理 ===
+# === Data Processing ===
 def save_titles_to_file(results: Dict, id_to_name: Dict, failed_ids: List) -> str:
-    """保存标题到文件"""
+    """Save titles to file"""
     file_path = get_output_path("txt", f"{format_time_filename()}.txt")
 
     with open(file_path, "w", encoding="utf-8") as f:
         for id_value, title_data in results.items():
-            # id | name 或 id
+            # id | name or id
             name = id_to_name.get(id_value)
             if name and name != id_value:
                 f.write(f"{id_value} | {name}\n")
             else:
                 f.write(f"{id_value}\n")
 
-            # 按排名排序标题
+            # Sort titles by rank
             sorted_titles = []
             for title, info in title_data.items():
                 cleaned_title = clean_title(title)
@@ -613,7 +613,7 @@ def save_titles_to_file(results: Dict, id_to_name: Dict, failed_ids: List) -> st
             f.write("\n")
 
         if failed_ids:
-            f.write("==== 以下ID请求失败 ====\n")
+            f.write("==== Failed ID Requests ====\n")
             for id_value in failed_ids:
                 f.write(f"{id_value}\n")
 
@@ -623,7 +623,7 @@ def save_titles_to_file(results: Dict, id_to_name: Dict, failed_ids: List) -> st
 def load_frequency_words(
     frequency_file: Optional[str] = None,
 ) -> Tuple[List[Dict], List[str]]:
-    """加载频率词配置"""
+    """Load frequency words configuration"""
     if frequency_file is None:
         frequency_file = os.environ.get(
             "FREQUENCY_WORDS_PATH", "config/frequency_words.txt"
@@ -631,7 +631,7 @@ def load_frequency_words(
 
     frequency_path = Path(frequency_file)
     if not frequency_path.exists():
-        raise FileNotFoundError(f"频率词文件 {frequency_file} 不存在")
+        raise FileNotFoundError(f"Frequency words file {frequency_file} does not exist")
 
     with open(frequency_path, "r", encoding="utf-8") as f:
         content = f.read()
@@ -647,17 +647,17 @@ def load_frequency_words(
         group_required_words = []
         group_normal_words = []
         group_filter_words = []
-        group_max_count = 0  # 默认不限制
+        group_max_count = 0  # Default no limit
 
         for word in words:
             if word.startswith("@"):
-                # 解析最大显示数量（只接受正整数）
+                # Parse maximum display count (only accept positive integers)
                 try:
                     count = int(word[1:])
                     if count > 0:
                         group_max_count = count
                 except (ValueError, IndexError):
-                    pass  # 忽略无效的@数字格式
+                    pass  # Ignore invalid @number format
             elif word.startswith("!"):
                 filter_words.append(word[1:])
                 group_filter_words.append(word[1:])
@@ -677,7 +677,7 @@ def load_frequency_words(
                     "required": group_required_words,
                     "normal": group_normal_words,
                     "group_key": group_key,
-                    "max_count": group_max_count,  # 新增字段
+                    "max_count": group_max_count,  # New field
                 }
             )
 
@@ -685,7 +685,7 @@ def load_frequency_words(
 
 
 def parse_file_titles(file_path: Path) -> Tuple[Dict, Dict]:
-    """解析单个txt文件的标题数据，返回(titles_by_id, id_to_name)"""
+    """Parse title data from a single txt file, returns (titles_by_id, id_to_name)"""
     titles_by_id = {}
     id_to_name = {}
 
@@ -694,14 +694,14 @@ def parse_file_titles(file_path: Path) -> Tuple[Dict, Dict]:
         sections = content.split("\n\n")
 
         for section in sections:
-            if not section.strip() or "==== 以下ID请求失败 ====" in section:
+            if not section.strip() or "==== Failed ID Requests ====" in section:
                 continue
 
             lines = section.strip().split("\n")
             if len(lines) < 2:
                 continue
 
-            # id | name 或 id
+            # id | name or id
             header_line = lines[0].strip()
             if " | " in header_line:
                 parts = header_line.split(" | ", 1)
@@ -720,19 +720,19 @@ def parse_file_titles(file_path: Path) -> Tuple[Dict, Dict]:
                         title_part = line.strip()
                         rank = None
 
-                        # 提取排名
+                        # Extract rank
                         if ". " in title_part and title_part.split(". ")[0].isdigit():
                             rank_str, title_part = title_part.split(". ", 1)
                             rank = int(rank_str)
 
-                        # 提取 MOBILE URL
+                        # Extract MOBILE URL
                         mobile_url = ""
                         if " [MOBILE:" in title_part:
                             title_part, mobile_part = title_part.rsplit(" [MOBILE:", 1)
                             if mobile_part.endswith("]"):
                                 mobile_url = mobile_part[:-1]
 
-                        # 提取 URL
+                        # Extract URL
                         url = ""
                         if " [URL:" in title_part:
                             title_part, url_part = title_part.rsplit(" [URL:", 1)
@@ -749,7 +749,7 @@ def parse_file_titles(file_path: Path) -> Tuple[Dict, Dict]:
                         }
 
                     except Exception as e:
-                        print(f"解析标题行出错: {line}, 错误: {e}")
+                        print(f"Error parsing title line: {line}, error: {e}")
 
     return titles_by_id, id_to_name
 
@@ -757,7 +757,7 @@ def parse_file_titles(file_path: Path) -> Tuple[Dict, Dict]:
 def read_all_today_titles(
     current_platform_ids: Optional[List[str]] = None,
 ) -> Tuple[Dict, Dict, Dict]:
-    """读取当天所有标题文件，支持按当前监控平台过滤"""
+    """Read all today's title files, support filtering by current monitoring platforms"""
     date_folder = format_date_folder()
     txt_dir = Path("output") / date_folder / "txt"
 
@@ -805,7 +805,7 @@ def process_source_data(
     all_results: Dict,
     title_info: Dict,
 ) -> None:
-    """处理来源数据，合并重复标题"""
+    """Process source data, merge duplicate titles"""
     if source_id not in all_results:
         all_results[source_id] = title_data
 
@@ -872,7 +872,7 @@ def process_source_data(
 
 
 def detect_latest_new_titles(current_platform_ids: Optional[List[str]] = None) -> Dict:
-    """检测当日最新批次的新增标题，支持按当前监控平台过滤"""
+    """Detect newly added titles from today's latest batch, support filtering by current monitoring platforms"""
     date_folder = format_date_folder()
     txt_dir = Path("output") / date_folder / "txt"
 
@@ -930,11 +930,11 @@ def detect_latest_new_titles(current_platform_ids: Optional[List[str]] = None) -
     return new_titles
 
 
-# === 统计和分析 ===
+# === Statistics and Analysis ===
 def calculate_news_weight(
     title_data: Dict, rank_threshold: int = CONFIG["RANK_THRESHOLD"]
 ) -> float:
-    """计算新闻权重，用于排序"""
+    """Calculate news weight for sorting"""
     ranks = title_data.get("ranks", [])
     if not ranks:
         return 0.0
@@ -942,7 +942,7 @@ def calculate_news_weight(
     count = title_data.get("count", len(ranks))
     weight_config = CONFIG["WEIGHT_CONFIG"]
 
-    # 排名权重：Σ(11 - min(rank, 10)) / 出现次数
+    # Rank weight: Σ(11 - min(rank, 10)) / occurrence count
     rank_scores = []
     for rank in ranks:
         score = 11 - min(rank, 10)
@@ -950,10 +950,10 @@ def calculate_news_weight(
 
     rank_weight = sum(rank_scores) / len(ranks) if ranks else 0
 
-    # 频次权重：min(出现次数, 10) × 10
+    # Frequency weight: min(occurrence count, 10) × 10
     frequency_weight = min(count, 10) * 10
 
-    # 热度加成：高排名次数 / 总出现次数 × 100
+    # Hotness bonus: high rank count / total occurrences × 100
     high_rank_count = sum(1 for rank in ranks if rank <= rank_threshold)
     hotness_ratio = high_rank_count / len(ranks) if ranks else 0
     hotness_weight = hotness_ratio * 100
@@ -970,29 +970,29 @@ def calculate_news_weight(
 def matches_word_groups(
     title: str, word_groups: List[Dict], filter_words: List[str]
 ) -> bool:
-    """检查标题是否匹配词组规则"""
-    # 防御性类型检查：确保 title 是有效字符串
+    """Check if title matches word group rules"""
+    # Defensive type checking: ensure title is a valid string
     if not isinstance(title, str):
         title = str(title) if title is not None else ""
     if not title.strip():
         return False
 
-    # 如果没有配置词组，则匹配所有标题（支持显示全部新闻）
+    # If no word groups configured, match all titles (supports showing all news)
     if not word_groups:
         return True
 
     title_lower = title.lower()
 
-    # 过滤词检查
+    # Filter words check
     if any(filter_word.lower() in title_lower for filter_word in filter_words):
         return False
 
-    # 词组匹配检查
+    # Word group matching check
     for group in word_groups:
         required_words = group["required"]
         normal_words = group["normal"]
 
-        # 必须词检查
+        # Required words check
         if required_words:
             all_required_present = all(
                 req_word.lower() in title_lower for req_word in required_words
@@ -1000,7 +1000,7 @@ def matches_word_groups(
             if not all_required_present:
                 continue
 
-        # 普通词检查
+        # Normal words check
         if normal_words:
             any_normal_present = any(
                 normal_word.lower() in title_lower for normal_word in normal_words
@@ -1014,7 +1014,7 @@ def matches_word_groups(
 
 
 def format_time_display(first_time: str, last_time: str) -> str:
-    """格式化时间显示"""
+    """Format time display"""
     if not first_time:
         return ""
     if first_time == last_time or not last_time:
@@ -1024,7 +1024,7 @@ def format_time_display(first_time: str, last_time: str) -> str:
 
 
 def format_rank_display(ranks: List[int], rank_threshold: int, format_type: str) -> str:
-    """统一的排名格式化方法"""
+    """Unified rank formatting method"""
     if not ranks:
         return ""
 
@@ -1073,13 +1073,13 @@ def count_word_frequency(
     new_titles: Optional[Dict] = None,
     mode: str = "daily",
 ) -> Tuple[List[Dict], int]:
-    """统计词频，支持必须词、频率词、过滤词，并标记新增标题"""
+    """Count word frequency, support required words, frequency words, filter words, and mark new titles"""
 
-    # 如果没有配置词组，创建一个包含所有新闻的虚拟词组
+    # If no word groups configured, create a virtual group containing all news
     if not word_groups:
-        print("频率词配置为空，将显示所有新闻")
-        word_groups = [{"required": [], "normal": [], "group_key": "全部新闻"}]
-        filter_words = []  # 清空过滤词，显示所有新闻
+        print("Frequency words configuration is empty, will show all news")
+        word_groups = [{"required": [], "normal": [], "group_key": "All News"}]
+        filter_words = []  # Clear filter words, show all news
 
     is_first_today = is_first_crawl_today()
 
@@ -1315,9 +1315,9 @@ def count_word_frequency(
                     f"增量模式：{total_new_count} 条新增新闻中，有 {matched_new_count} 条{filter_status}"
                 )
                 if matched_new_count == 0 and len(word_groups) > 1:
-                    print("增量模式：没有新增新闻匹配频率词，将不会发送通知")
+                    print("Incremental mode: No new news matching frequency words, will not send notification")
             else:
-                print("增量模式：未检测到新增新闻")
+                print("Incremental mode: No new news detected")
     elif mode == "current":
         total_input_news = sum(len(titles) for titles in results_to_process.values())
         if is_first_today:
@@ -3456,7 +3456,7 @@ def send_to_notifications(
         )
 
     if not results:
-        print("未配置任何通知渠道，跳过通知发送")
+        print("No notification channels configured, skipping notification sending")
 
     # 如果成功发送了任何通知，且启用了每天只推一次，则记录推送
     if (
@@ -3907,14 +3907,14 @@ def send_to_email(
         msg["Date"] = formatdate(localtime=True)
         msg["Message-ID"] = make_msgid()
 
-        # 添加纯文本部分（作为备选）
+        # Add plain text part (as alternative)
         text_content = f"""
-TrendRadar 热点分析报告
+TrendRadar Hot Topics Analysis Report
 ========================
-报告类型：{report_type}
-生成时间：{now.strftime('%Y-%m-%d %H:%M:%S')}
+Report Type: {report_type}
+Generated Time: {now.strftime('%Y-%m-%d %H:%M:%S')}
 
-请使用支持HTML的邮件客户端查看完整报告内容。
+Please use an email client that supports HTML to view the complete report content.
         """
         text_part = MIMEText(text_content, "plain", "utf-8")
         msg.attach(text_part)
@@ -4179,7 +4179,7 @@ class NewsAnalyzer:
             self._check_version_update()
 
     def _detect_docker_environment(self) -> bool:
-        """检测是否运行在 Docker 容器中"""
+        """Check if running in Docker container"""
         try:
             if os.environ.get("DOCKER_CONTAINER") == "true":
                 return True
@@ -4192,21 +4192,21 @@ class NewsAnalyzer:
             return False
 
     def _should_open_browser(self) -> bool:
-        """判断是否应该打开浏览器"""
+        """Determine if browser should be opened"""
         return not self.is_github_actions and not self.is_docker_container
 
     def _setup_proxy(self) -> None:
-        """设置代理配置"""
+        """Setup proxy configuration"""
         if not self.is_github_actions and CONFIG["USE_PROXY"]:
             self.proxy_url = CONFIG["DEFAULT_PROXY"]
-            print("本地环境，使用代理")
+            print("Local environment, using proxy")
         elif not self.is_github_actions and not CONFIG["USE_PROXY"]:
-            print("本地环境，未启用代理")
+            print("Local environment, proxy not enabled")
         else:
-            print("GitHub Actions环境，不使用代理")
+            print("GitHub Actions environment, not using proxy")
 
     def _check_version_update(self) -> None:
-        """检查版本更新"""
+        """Check for version updates"""
         try:
             need_update, remote_version = check_version_update(
                 VERSION, CONFIG["VERSION_CHECK_URL"], self.proxy_url
@@ -4217,18 +4217,18 @@ class NewsAnalyzer:
                     "current_version": VERSION,
                     "remote_version": remote_version,
                 }
-                print(f"发现新版本: {remote_version} (当前: {VERSION})")
+                print(f"Found new version: {remote_version} (current: {VERSION})")
             else:
-                print("版本检查完成，当前为最新版本")
+                print("Version check completed, current version is the latest")
         except Exception as e:
-            print(f"版本检查出错: {e}")
+            print(f"Version check error: {e}")
 
     def _get_mode_strategy(self) -> Dict:
-        """获取当前模式的策略配置"""
+        """Get strategy configuration for current mode"""
         return self.MODE_STRATEGIES.get(self.report_mode, self.MODE_STRATEGIES["daily"])
 
     def _has_notification_configured(self) -> bool:
-        """检查是否配置了任何通知渠道"""
+        """Check if any notification channels are configured"""
         return any(
             [
                 CONFIG["FEISHU_WEBHOOK_URL"],
@@ -4247,7 +4247,7 @@ class NewsAnalyzer:
     def _has_valid_content(
         self, stats: List[Dict], new_titles: Optional[Dict] = None
     ) -> bool:
-        """检查是否有有效的新闻内容"""
+        """Check if there is valid news content"""
         if self.report_mode in ["incremental", "current"]:
             # 增量模式和current模式下，只要stats有内容就说明有匹配的新闻
             return any(stat["count"] > 0 for stat in stats)
@@ -4276,11 +4276,11 @@ class NewsAnalyzer:
             )
 
             if not all_results:
-                print("没有找到当天的数据")
+                print("No data found for today")
                 return None
 
             total_titles = sum(len(titles) for titles in all_results.values())
-            print(f"读取到 {total_titles} 个标题（已按当前监控平台过滤）")
+            print(f"Read {total_titles} titles (filtered by current monitoring platforms)")
 
             new_titles = detect_latest_new_titles(current_platform_ids)
             word_groups, filter_words = load_frequency_words()
@@ -4388,7 +4388,7 @@ class NewsAnalyzer:
             )
             return True
         elif CONFIG["ENABLE_NOTIFICATION"] and not has_notification:
-            print("⚠️ 警告：通知功能已启用但未配置任何通知渠道，将跳过通知发送")
+            print("⚠️ Warning: Notification feature is enabled but no notification channels configured, will skip notification sending")
         elif not CONFIG["ENABLE_NOTIFICATION"]:
             print(f"跳过{report_type}通知：通知功能已禁用")
         elif (
@@ -4486,16 +4486,16 @@ class NewsAnalyzer:
         print(f"当前北京时间: {now.strftime('%Y-%m-%d %H:%M:%S')}")
 
         if not CONFIG["ENABLE_CRAWLER"]:
-            print("爬虫功能已禁用（ENABLE_CRAWLER=False），程序退出")
+            print("Crawler feature is disabled (ENABLE_CRAWLER=False), program exiting")
             return
 
         has_notification = self._has_notification_configured()
         if not CONFIG["ENABLE_NOTIFICATION"]:
-            print("通知功能已禁用（ENABLE_NOTIFICATION=False），将只进行数据抓取")
+            print("Notification feature is disabled (ENABLE_NOTIFICATION=False), will only perform data crawling")
         elif not has_notification:
-            print("未配置任何通知渠道，将只进行数据抓取，不发送通知")
+            print("No notification channels configured, will only perform data crawling without sending notifications")
         else:
-            print("通知功能已启用，将发送通知")
+            print("Notification feature is enabled, will send notifications")
 
         mode_strategy = self._get_mode_strategy()
         print(f"报告模式: {self.report_mode}")
@@ -4582,8 +4582,8 @@ class NewsAnalyzer:
                         html_file_path=html_file,
                     )
             else:
-                print("❌ 严重错误：无法读取刚保存的数据文件")
-                raise RuntimeError("数据一致性检查失败：保存后立即读取失败")
+                print("❌ Critical error: Unable to read the data file that was just saved")
+                raise RuntimeError("Data consistency check failed: Unable to read immediately after saving")
         else:
             title_info = self._prepare_current_title_info(results, time_info)
             stats, html_file = self._run_analysis_pipeline(
@@ -4662,13 +4662,13 @@ def main():
         analyzer = NewsAnalyzer()
         analyzer.run()
     except FileNotFoundError as e:
-        print(f"❌ 配置文件错误: {e}")
-        print("\n请确保以下文件存在:")
+        print(f"❌ Configuration file error: {e}")
+        print("\nPlease ensure the following files exist:")
         print("  • config/config.yaml")
         print("  • config/frequency_words.txt")
-        print("\n参考项目文档进行正确配置")
+        print("\nPlease refer to the project documentation for proper configuration")
     except Exception as e:
-        print(f"❌ 程序运行错误: {e}")
+        print(f"❌ Program runtime error: {e}")
         raise
 
 
