@@ -2,6 +2,8 @@ FROM python:3.12-slim
 
 ARG TARGETARCH
 
+ENV TZ=Asia/Ho_Chi_Minh
+
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
@@ -12,7 +14,8 @@ WORKDIR /app
 # 安装运行时依赖与 supercronic（用于定时任务）
 RUN set -ex && \
     apt-get update && \
-    apt-get install -y --no-install-recommends curl ca-certificates bash && \
+    apt-get install -y --no-install-recommends curl ca-certificates bash tzdata && \
+    ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezone && \
     case "${TARGETARCH}" in \
       amd64) \
         export SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/${SUPERCRONIC_VERSION}/supercronic-linux-amd64; \

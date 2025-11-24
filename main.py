@@ -234,7 +234,7 @@ print(f"监控平台数量: {len(CONFIG['PLATFORMS'])}")
 # === 工具函数 ===
 def get_beijing_time():
     """获取北京时间"""
-    return datetime.now(pytz.timezone("Asia/Shanghai"))
+    return datetime.now(pytz.timezone("Asia/Ho_Chi_Minh"))
 
 
 def format_date_folder():
@@ -367,7 +367,7 @@ class PushRecordManager:
             try:
                 date_str = record_file.stem.replace("push_record_", "")
                 file_date = datetime.strptime(date_str, "%Y%m%d")
-                file_date = pytz.timezone("Asia/Shanghai").localize(file_date)
+                file_date = pytz.timezone("Asia/Ho_Chi_Minh").localize(file_date)
 
                 if (current_time - file_date).days > retention_days:
                     record_file.unlink()

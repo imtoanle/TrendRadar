@@ -14,6 +14,7 @@ case "${RUN_MODE:-cron}" in
 "sse"|"server"|"mcp")
     echo "🌐 启动 TrendRadar MCP Server"
     exec /usr/local/bin/python -m mcp_server.server \
+        --project-root "/app" \
         --transport "${MCP_TRANSPORT:-sse}" \
         --host "${MCP_HOST:-0.0.0.0}" \
         --port "${MCP_PORT:-8000}" \

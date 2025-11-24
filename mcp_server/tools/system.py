@@ -65,13 +65,13 @@ class SystemManagementTools:
                 }
             }
 
-    def trigger_crawl(self, platforms: Optional[List[str]] = None, save_to_local: bool = False, include_url: bool = False) -> Dict:
+    def trigger_crawl(self, platforms: Optional[List[str]] = None, save_to_local: bool = True, include_url: bool = False) -> Dict:
         """
         手动触发一次临时爬取任务（可选持久化）
 
         Args:
             platforms: 指定平台列表，为空则爬取所有平台
-            save_to_local: 是否保存到本地 output 目录，默认 False
+            save_to_local: 是否保存到本地 output 目录，默认 True
             include_url: 是否包含URL链接，默认False（节省token）
 
         Returns:
@@ -241,8 +241,8 @@ class SystemManagementTools:
                     news_data.append(news_item)
 
             # 获取北京时间
-            beijing_tz = pytz.timezone("Asia/Shanghai")
-            now = datetime.now(beijing_tz)
+            hochiminh_tz = pytz.timezone("Asia/Ho_Chi_Minh")
+            now = datetime.now(hochiminh_tz)
 
             # 构建返回结果
             result = {

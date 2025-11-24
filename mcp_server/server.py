@@ -542,7 +542,7 @@ async def get_system_status() -> str:
 @mcp.tool()
 async def trigger_crawl(
     platforms: Optional[List[str]] = None,
-    save_to_local: bool = False,
+    save_to_local: bool = True,
     include_url: bool = False
 ) -> str:
     """
@@ -554,7 +554,7 @@ async def trigger_crawl(
                    - 支持的平台来自 config/config.yaml 的 platforms 配置
                    - 每个平台都有对应的name字段（如"知乎"、"微博"），方便AI识别
                    - 注意：失败的平台会在返回结果的 failed_platforms 字段中列出
-        save_to_local: 是否保存到本地 output 目录，默认 False
+        save_to_local: 是否保存到本地 output 目录，默认 True
         include_url: 是否包含URL链接，默认False（节省token）
 
     Returns:
